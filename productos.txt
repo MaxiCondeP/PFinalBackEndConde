@@ -1,0 +1,20 @@
+[
+	{
+		"title": "Teclado",
+		"price": 2500,
+		"thumbnail": "loremipsum.com",
+		"id": 1
+	},
+	{
+		"title": "Mouse",
+		"price": 1000,
+		"thumbnail": "loremipsum.com",
+		"id": 2
+	},
+	{
+		"title": "Monitor",
+		"price": 10000,
+		"thumbnail": "loremipsum.com",
+		"id": 3
+	}
+]
