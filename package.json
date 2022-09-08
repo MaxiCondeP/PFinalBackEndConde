@@ -1,12 +1,15 @@
 {
-  "name": "pf-entrega1",
+  "name": "pf-entrega2",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "type": "module",
   "dependencies": {
+    "dotenv": "^16.0.2",
     "express": "^4.18.1",
-    "fs": "^0.0.1-security"
+    "firebase-admin": "^11.0.1",
+    "fs": "^0.0.1-security",
+    "mongoose": "^6.5.5"
   },
   "devDependencies": {},
   "scripts": {
