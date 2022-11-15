@@ -1,5 +1,5 @@
 
-import{ProdContainer} from '../controllers/fileProductController.js'
+import{ProdContainer} from '../containers/fileProductContainer.js'
 
 export default class fileProductDao extends ProdContainer{
     constructor(){

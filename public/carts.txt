@@ -10,6 +10,15 @@
 				"stock": 8,
 				"id": "1",
 				"quantity": 6
+			},
+			{
+				"title": "Mouse",
+				"price": 1000,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 5,
+				"id": 2
+				"quantity": 5
 			}
 		],
 		"id": 1

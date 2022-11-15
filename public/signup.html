@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <title>SIGNUP</title>
+</head>
+
+<body>
+    <div class="loginContainer">
+        <form class="logForm" id="signupForm" action="/signup" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="name">Nombre y Apellido: </label>
+                <input id="nameSignupInput" type="text" class="form-control" name="name">
+                <div class="form-text">Ingrese su Nombre completo</div>
+            </div>
+            <div class="mb-3">
+                <label for="email">Email: </label>
+                <input id="emailSignupInput" type="email" class="form-control" name="username">
+                <div class="form-text">Ingrese su email</div>
+            </div>
+            <div class="mb-3">
+                <label for="phone">Celular: </label>
+                <input id="phoneSignupInput" type="phone" class="form-control" name="phone">
+                <div class="form-text">Ingrese su celular(con prefijos)</div>
+            </div>
+            <div class="mb-3">
+                <label for="age">Edad: </label>
+                <input id="ageSignupInput" type="number" class="form-control" name="age">
+                <div class="form-text">Ingrese su email</div>
+            </div>
+            <div class="mb-3">
+                <label for="avatar">Link a imagen: </label>
+                <input id="avatarSignupInput" type="file" class="form-control" name="avatar">
+                <div class="form-text">Ingrese su avatar</div>
+            </div>
+            <div class="mb-3">
+                <label for="password">Contraseña: </label>
+                <input id="passSignupInput" type="password" class="form-control" name="password">
+                <div class="form-text">Ingrese su contraseña</div>
+            </div>
+            <button type="submit" class="btn btn-primary">SIGNUP </button>
+        </form>
+        <div class="redirectLog">
+            <label>¿Ya estás registrado?</label>
+            <a href="/login">
+                <button id="btnToLogin" class="btnChat" type="button">Login</button>
+            </a>
+        </div>
+    </div>
+
+</body>
+
+</html>

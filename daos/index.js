@@ -3,6 +3,7 @@ dotenv.config();
 
 export let daoCart;
 export let daoProd;
+export let daoUsr;
 
 
 switch (process.env.DATA_PERSISTENCE) {
@@ -16,9 +17,11 @@ switch (process.env.DATA_PERSISTENCE) {
 	case 'MONGO':
 		const { default: mongoCartDao } = await import('../daos/mongoCartDao.js');
 		const { default: mongoProductDao } = await import('../daos/mongoProductDao.js');
+		const {default: mongoUsrDao}= await import('../daos/mongoUsrDao.js');
 
 		daoCart = new mongoCartDao();
 		daoProd = new mongoProductDao();
+		daoUsr= new mongoUsrDao();
 		break;
 	case 'FIREBASE':
 		const { default: firebaseCartDao } = await import('../daos/firebaseCartDao.js');

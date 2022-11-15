@@ -1,0 +1,129 @@
+html {
+    margin: 1rem;
+    border-radius: 0.5rem;
+}
+
+
+span {
+    width: 5rem;
+}
+
+.icon {
+    width: 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+}
+
+.container {
+    margin: 1rem;
+    padding: 3rem;
+    background-color: rgb(216, 209, 209);
+    width: 100%;
+    border-radius: 0.5rem;
+}
+
+.loginContainer {
+    margin: 2% 35%;
+    padding: 3rem;
+    background-color: rgb(216, 209, 209);
+    width: 30%;
+    text-align: center;
+    border-radius: 0.5rem;
+}
+
+.loggedDb {
+    margin: 2% 15%;
+    padding: 3rem;
+    background-color: rgb(197, 192, 192);
+    width: 50%;
+    text-align: center;
+    border-radius: 0.5rem;
+
+}
+
+
+
+
+
+.messageListContainer {
+    margin: 1rem 0 1rem 0;
+    padding: 0.5rem;
+    background-color: rgb(205, 199, 199);
+    border-radius: 0.5rem;
+    min-height: 30%;
+
+}
+
+.divChat {
+    padding: 0.5rem;
+}
+
+.emailChat {
+    display: inline;
+    font-weight: bold;
+    color: blue;
+}
+
+.dateChat {
+    display: inline;
+    color: brown;
+}
+
+.textChat {
+    display: inline;
+    font-style: italic;
+    color: green;
+}
+
+.imgChat {
+    width: 2rem;
+    border-radius: 0.5rem;
+}
+
+.btnChat {
+    border-radius: 0.4rem;
+    border-style: double;
+}
+
+.failContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin:2%;
+    width: 92%;
+    height: 40rem;
+    background-color: rgb(224, 112, 131);
+}
+
+.logForm{
+    margin-bottom: 1rem;
+}
+
+.redirectLog{
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+}
+
+
+.infoContainer{
+    margin: 3% ;
+    padding: 3rem;
+    background-color: rgb(216, 209, 209);
+    width: 70%;
+    text-align: center;
+    border-radius: 0.5rem;
+
+}
+
+.infoContainer > div > label{
+   font-weight: bold;
+}
+
+.h1Info{
+    padding: 2rem;
+}

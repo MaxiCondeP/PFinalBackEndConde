@@ -1,4 +1,4 @@
-import{firebaseProductContainer} from '../controllers/firebaseProductController.js'
+import{firebaseProductContainer} from '../containers/firebaseProductContainer.js'
 
 export default class firebaseProductDao extends firebaseProductContainer{
     constructor(){

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import admin from 'firebase-admin'
 import serviceAccount from './firebase/ecommerce-db-d9fbd-firebase-adminsdk-iwnjz-fb317452e3.js'
+import { logger } from "./logger_config.js"
 
 dotenv.config();
 
@@ -11,16 +12,17 @@ try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
   });
-  console.log("Connected ok to Firebase");
+
+  logger.log("info", "Connected ok to Firebase");
 } catch (error) {
   console.log(error);
 }
 
 //prueba de conexion mongo
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:')); 
+db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-  console.log('Connected ok to mongoDB'); 
+  logger.log("info",'Connected ok to mongoDB');
 });
 
 
@@ -31,7 +33,15 @@ export const config = {
   },
   firebase: {
     db: admin.firestore()
+  },
+  admin_data:{
+    admin_email: process.env.ADMIN_EMAIL,
+    admin_pass_email: process.env.ADMIN_PASS_EMAIL,
+    admin_phone: process.env.ADMIN_PHONE,
+    admin_accountSid: process.env.PHONE_ACCOUNT_SID,
+    admin_authToken: process.env.PHONE_AUTH_TOKEN,
   }
+  
 }
 
 

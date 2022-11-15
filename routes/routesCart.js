@@ -1,5 +1,7 @@
 import Router from 'express';
 import { daoCart, daoProd } from '../daos/index.js'
+import { getOrderMail } from '../utils/mailer.js';
+import { getOrderSMS } from '../utils/messengers.js';
 
 export const routerCart = Router();
 //Crea un carrito y dev su id
@@ -44,6 +46,14 @@ routerCart.post('/:id/products', async (req, res) => {
 
 });
 
+///Finaliza orden, por ahora sólo se envía el mail
+routerCart.get('/:id/order',async(req, res)=>{
+    let products= await daoCart.getProducts(req.params.id);
+    let user= req.session.user;
+    await getOrderMail(user.name,products);
+    await getOrderSMS(user.name, user.phone);
+
+})
 routerCart.delete('/:id/products/:id_prod', async (req, res) => {
     let idCart = req.params.id;
     let idProd = req.params.id_prod;

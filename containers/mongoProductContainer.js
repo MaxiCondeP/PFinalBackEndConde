@@ -1,22 +1,5 @@
-import mongoose from "mongoose";
-import {config} from '../config.js';
+import {productModel} from "../models/modelsMongodb.js"
 
-try {
-    mongoose.connect(config.mongo.uri, config.mongo.options);
-    console.log("Connected ok to mongoDB");
-} catch (error) {
-    console.log(error);
-};
-
-
-const schemaProduct = new mongoose.Schema({
-    id: { type: Number, required: true },
-    title: { type: String, required: true, max: 100 },
-    price: { type: Number, required: true },
-    thumbnail: { type: String, required: true, max: 400 },
-    timestamp: { type: Number, required: true },
-    stock: { type: Number, required: true }
-});
 
 ///Creo la clase Producto
 export class Product {
@@ -34,7 +17,7 @@ export class Product {
 
 export class mongoProductContainer {
     constructor() {
-        this.collection = mongoose.model('products', schemaProduct);
+        this.collection = productModel;
     }
 
     ///Traigo el archivo y devuelvo el array.

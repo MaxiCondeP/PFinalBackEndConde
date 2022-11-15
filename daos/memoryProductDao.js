@@ -1,5 +1,5 @@
 
-import{ProdContainer} from '../controllers/memoryProductController.js'
+import{ProdContainer} from '../containers/memoryProductContainer.js'
 
 export default class memoryProductDao extends ProdContainer{
     constructor(){

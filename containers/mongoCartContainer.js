@@ -1,20 +1,5 @@
-import mongoose from "mongoose";
-import {config} from '../config.js';
+import {cartModel} from "../models/modelsMongodb.js"
 
-try {
-    mongoose.connect(config.mongo.uri, config.mongo.options);
-    console.log("Connected ok to mongoDB");
-} catch (error) {
-    console.log(error);
-};
-
-////creación de schema
-
-const schemaCart = new mongoose.Schema({
-    id: { type: Number, required: true },
-    timestamp: { type: Number, required: true },
-    products: { type: Array, required: true },
-});
 
 export class Cart {
     constructor() {
@@ -27,7 +12,7 @@ export class Cart {
 export class mongoCartContainer {
 
     constructor() {
-        this.collection = mongoose.model('carts', schemaCart);
+        this.collection = cartModel;
     }
 
 
