@@ -3,8 +3,8 @@ import { logger } from "../logger_config.js"
 import {config} from '../config.js';
 
 
-const accountSid = 'ACb4939bdb8272d3b876d55af9d0c6c853';
-const authToken = 'bae90f19fda9a9d6a658e4fdf12b0b4a';
+const accountSid =config.admin_data.admin_accountSid;
+const authToken =config.admin_data.admin_authToken;
 const sender =config.admin_data.admin_phone;
 
 const client = twilio(accountSid, authToken);
