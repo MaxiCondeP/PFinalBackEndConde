@@ -1,6 +1,6 @@
-import { routerCart } from './routes/routesCart.js';
-import { routerProd } from './routes/routesProduct.js';
-import { daoUsr } from './daos/index.js'
+import { routerCart } from './src/routes/routesCart.js';
+import { routerProd } from './src/routes/routesProduct.js';
+import { routerIndex, routerInfo } from './src/routes/routes.js';
 import session from 'express-session';
 import passport from "passport";
 import { Strategy } from "passport-local";
@@ -9,73 +9,37 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { Server as HTTPServer } from "http";
 import express from 'express';
-import dotenv from 'dotenv';
+import { config } from './config.js'
 import cluster from "cluster";
 import os from "os";
 import parseArgs from "minimist";
 import { logger } from "./logger_config.js"
 import fileUpload from 'express-fileupload';
-import { getSignupMail } from './utils/mailer.js';
+import { localPassport } from "./src/utils/passport.js";
 
 
-
-const LocalStrategy = Strategy;
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+export const __dirname = path.dirname(__filename);
 const options = { default: { MODE: "fork" }, alias: { m: "MODE" } }
 const args = parseArgs(process.argv.slice(2), options);
-console.log(args)
+
+
+import repositoryCarts from "./src/modules/repositoryCarts.js";
+import repositoryProducts from "./src/modules/repositoryProducts.js";
+import repositoryUsr from "./src/modules/repositoryUsr.js";
+import repositoryMessages from "./src/modules/repositoryMessages.js";
+const repoCarts = new repositoryCarts();
+const repoProducts = new repositoryProducts();
+const repoUsr = new repositoryUsr();
+const repoMessages = new repositoryMessages();
+export const daoProducts = await repoProducts.getDao();
+export const daoCarts = await repoCarts.getDao();
+export const daoUsr = await repoUsr.getDao();
+export const daoMessages = await repoMessages.getDao();
 
 
 const app = express();
-const httpServer = new HTTPServer(app);
-dotenv.config();
-
-
-const PORT = process.env.PORT || 8080;
-
-
-////PASSPORT
-
-passport.use("login", new LocalStrategy(async (username, password, done) => {
-  const user = await daoUsr.getUsr(username, password);
-  if (!user) {
-    return done(null, null, { message: "Invalid username or password" });
-  } else {
-    return done(null, user);
-  }
-}));
-
-passport.use("signup", new LocalStrategy({
-  passReqToCallback: true
-}, async (req, username, password, done) => {
-  let EDFile = req.files.avatar
-  EDFile.mv(`./public/img/${EDFile.name}`, err => {
-    if (err) {
-      logger.log("error", `Error al cargar archivo: ${err}`);
-    } else {
-      logger.log("info", `File upload`);
-    }
-  })
-  req.body.avatar = `./public/img/${EDFile.name}`;
-  const user = await daoUsr.newUsr(req.body);
-  if (user) {
-    await getSignupMail(user);
-    return done(null, user);
-  } else {
-    return done(null, null);
-  }
-}));
-
-passport.serializeUser((user, done) => {
-  done(null, user._id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  const user = await daoUsr.usrById(id);
-  done(null, user);
-});
+export const httpServer = new HTTPServer(app);
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -86,7 +50,7 @@ app.use(session({
     mongoUrl: 'mongodb+srv://root:pwd123@cluster0.age0did.mongodb.net/ecommerce-atlas?retryWrites=true&w=majority',
     dbName: "ecommerce-atlas",
     collectionName: "sessions",
-    ttl: 600,//Seteo el tiempo de sesión en 10min
+    ttl: config.SESSION_TIME,//Seteo el tiempo de sesión en 10min
     retries: 0
   }),
   secret: 'STRING_SECRET',
@@ -98,71 +62,19 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(fileUpload());
+const LocalStrategy = Strategy;
+await localPassport(passport, LocalStrategy);
+
+app.use('/', routerIndex);
+app.use('/', routerInfo);
 app.use('/api/products', routerProd);
 app.use('/api/cart', routerCart);
 
 
-app.get('/', (req, res, next) => {
-  res.redirect("/login");
-  logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-});
-
-app.post("/signup", passport.authenticate("signup",
-  {
-    failureRedirect: "/failSignup",
-  }), (req, res) => {
-    req.session.user = req.user;
-    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.redirect("/login");
-  });
-
-
-app.post('/login', passport.authenticate("login", {
-  failureRedirect: "/failLogin",
-}), (req, res) => {
-  req.session.user = req.user;
-  logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-  res.send("LOGGED OK!");
-});
-
-
-app.get("/login", (req, res) => {
-  //Si esta autenticado va a directo a dashboard
-  if (!req.session.user) {
-    res.sendFile(__dirname + "/public/login.html");
-  } else {
-    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.send("LOGGED OK");
-  }
-})
-
-app.get("/signup", (req, res) => {
-  logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-  res.sendFile(__dirname + "/public/signup.html");
-});
-
-app.get("/failLogin", (req, res) => {
-  logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-  res.sendFile(__dirname + "/public/failLogin.html");
-});
-
-app.get("/failSignup", (req, res) => {
-  logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-  res.sendFile(__dirname + "/public/failSignup.html");
-});
-
-app.get("/logout", (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      logger.log("error", `Error al cerrar sesion: ${err}`);
-    }
-    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.redirect("/login")
-  });
-});
-
-
 const srv = httpServer;
+const PORT = config.PORT;
+
+
 
 if (args.MODE === 'CLUSTER') {
 
