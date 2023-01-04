@@ -1,8 +1,8 @@
 
-import{CartContainer} from '../containers/fileCartContainer.js'
+import { CartContainer } from '../containers/fileCartContainer.js'
 
-export default class fileProductDao extends CartContainer{
-    constructor(){
+export default class fileCartDao extends CartContainer {
+    constructor() {
         super("carts");
     }
 }

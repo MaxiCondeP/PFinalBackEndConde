@@ -1,5 +1,7 @@
 import { routerCart } from './src/routes/routesCart.js';
 import { routerProd } from './src/routes/routesProduct.js';
+import { routerOrder } from './src/routes/routesOrders.js';
+import { routerMessage } from './src/routes/routesMessages.js';
 import { routerIndex, routerInfo } from './src/routes/routes.js';
 import session from 'express-session';
 import passport from "passport";
@@ -28,14 +30,17 @@ import repositoryCarts from "./src/modules/repositoryCarts.js";
 import repositoryProducts from "./src/modules/repositoryProducts.js";
 import repositoryUsr from "./src/modules/repositoryUsr.js";
 import repositoryMessages from "./src/modules/repositoryMessages.js";
+import repositoryOrders from "./src/modules/repositoryOrders.js";
 const repoCarts = new repositoryCarts();
 const repoProducts = new repositoryProducts();
 const repoUsr = new repositoryUsr();
 const repoMessages = new repositoryMessages();
+const repoOrders = new repositoryOrders();
 export const daoProducts = await repoProducts.getDao();
 export const daoCarts = await repoCarts.getDao();
 export const daoUsr = await repoUsr.getDao();
 export const daoMessages = await repoMessages.getDao();
+export const daoOrders = await repoOrders.getDao();
 
 
 const app = express();
@@ -69,6 +74,8 @@ app.use('/', routerIndex);
 app.use('/', routerInfo);
 app.use('/api/products', routerProd);
 app.use('/api/cart', routerCart);
+app.use('/api/orders', routerOrder);
+app.use('/api/chat', routerMessage);
 
 
 const srv = httpServer;

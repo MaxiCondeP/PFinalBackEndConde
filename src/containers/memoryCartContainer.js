@@ -1,7 +1,7 @@
 import { Cart } from '../models/cartDTO.js'
 let instance = null
 
-export class CartContainer {
+export class memoryCartContainer {
 
     constructor() {
         this.carts = [];

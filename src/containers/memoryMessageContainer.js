@@ -20,20 +20,29 @@ export class memoryMessageContainer {
             return this.messages;
         }
         catch (err) {
-            console.log("Error al leer historial de mensajes", err);
+            return { error: "Error al leer historial de mensajes", err };
         }
     }
 
     async save(message) {
         try {
-
             this.messages.push(message);
-
         }
         catch (err) {
-            console.log("Error al actualizar historial de mensajes", err);
+            return { error: "Error al actualizar historial de mensajes", err }
 
         }
-
     }
+
+    async getByUsr(email) {
+        try {
+            const messages = await this.getAll();
+            return messages.filter((c) => c.author.email == email)
+        }
+        catch (err) {
+            return { error: "Error al actualizar historial de mensajes", err };
+
+        }
+    }
+
 }

@@ -1,13 +1,8 @@
 import * as fs from 'fs';
+import { Cart } from '../models/cartDTO.js'
 
-let instance=null;
+let instance = null;
 
-export class Cart {
-    constructor() {
-        this.timestamp = Date.now();
-        this.products = [];
-    }
-}
 
 export class CartContainer {
 
@@ -17,13 +12,13 @@ export class CartContainer {
     }
 
 
-    static getContainer(){
-        if(!instance){
-            instance=new CartContainer();
+    static getContainer() {
+        if (!instance) {
+            instance = new CartContainer();
         }
         return instance;
-    } 
-    
+    }
+
     //Recibo el contenido y lo escribo en el archivo
     async write(content) {
         try {

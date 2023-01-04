@@ -25,7 +25,7 @@ export class mongoMessageContainer {
             return (content);
         }
         catch (err) {
-            console.log("Error al leer historial de mensajes", err);
+            return { error: "Error al leer historial de mensajes", err };
         }
     }
 
@@ -38,9 +38,22 @@ export class mongoMessageContainer {
             //{author: message.author,text: message.text,date: message.date};
         }
         catch (err) {
-            console.log("Error al actualizar historial de mensajes", err);
+            return { error: "Error al actualizar historial de mensajes", err };
 
         }
 
     }
+
+    async getByUsr(email) {
+        try {
+            const messages = await this.getAll();
+            return messages.filter((c) => c.author.email == email)
+        }
+        catch (err) {
+            return { error: "Error al actualizar historial de mensajes", err };
+
+        }
+    }
+
+
 }

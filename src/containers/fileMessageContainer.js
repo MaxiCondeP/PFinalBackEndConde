@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-let instance= null;
+let instance = null;
 
 
 export class fileMessageContainer {
@@ -9,9 +9,9 @@ export class fileMessageContainer {
         this.rutaDeArchivo = "./public/" + this.nombre + ".txt";
     }
 
-    static getContainer(nombreArchivo){
-        if(!instance){
-            instance=new fileMessageContainer(nombreArchivo);
+    static getContainer(nombreArchivo) {
+        if (!instance) {
+            instance = new fileMessageContainer(nombreArchivo);
         }
         return instance;
     }
@@ -24,7 +24,7 @@ export class fileMessageContainer {
             return chat;
         }
         catch (err) {
-            console.log("Error al leer historial de mensajes", err);
+            return { error: "Error al leer el historial de mensajes", err }
         }
     }
 
@@ -33,14 +33,23 @@ export class fileMessageContainer {
             const messages = await this.getAll();
             //genero el id para cada msj
             messages.push(message);
-            const newFile=JSON.stringify(messages, null, "\t");
+            const newFile = JSON.stringify(messages, null, "\t");
             await fs.promises.writeFile(this.rutaDeArchivo, newFile);
 
         }
         catch (err) {
-            console.log("Error al actualizar historial de mensajes", err);
+            return { error: "Error al escribir el archivo", err }
+        }
+    }
 
-         }
+    async getByUsr(email) {
+        try {
+            const messages = await this.getAll();
+            return messages.filter((c) => c.author.email == email)
+        }
+        catch (err) {
+            return { error: "Error al actualizar historial de mensajes", err };
 
+        }
     }
 }

@@ -1,6 +1,6 @@
 import { getOrderMail } from '../utils/mailer.js';
 import { getOrderSMS } from '../utils/messengers.js';
-import {daoProducts, daoCarts} from '../../server.js'
+import { daoProducts, daoCarts, daoOrders } from '../../server.js'
 
 
 //Crea un carrito y dev su id
@@ -26,7 +26,7 @@ export const deleteCart = async (req, res) => {
 //Devuelve productos de un carrito
 export const getProductsOnCart = async (req, res) => {
     let id = req.params.id;
-    let products=await daoCarts.getProducts(id);
+    let products = await daoCarts.getProducts(id);
     res.status(200).send(products);
 }
 
@@ -45,10 +45,11 @@ export const addProductToCart = async (req, res) => {
     }
 }
 
-///Genera la orden, por ahora sólo se envía el mail
+///Genera la orden, envía el mail y sms
 export const generateOrder = async (req, res) => {
     let products = await daoCarts.getProducts(req.params.id);
     let user = req.session.user;
+    await daoOrders.newOrder(user, products)
     await getOrderMail(user.name, products);
     await getOrderSMS(user.name, user.phone);
     res.status(200).send(`Order generated.`)

@@ -1,4 +1,5 @@
 import Router from 'express';
+import { isLoggedIn } from '../utils/middlewares.js';
 import {
     newCart,
     deleteCart,
@@ -10,9 +11,9 @@ import {
 
 export const routerCart = Router();
 
-routerCart.post('/', newCart);
-routerCart.delete('/:id',deleteCart);
-routerCart.get('/:id/products',getProductsOnCart);
-routerCart.post('/:id/products',addProductToCart);
-routerCart.get('/:id/order', generateOrder);
-routerCart.delete('/:id/products/:id_prod',deleteProductFromCart);
+routerCart.post('/', isLoggedIn, newCart);
+routerCart.delete('/:id', isLoggedIn, deleteCart);
+routerCart.get('/:id/products', isLoggedIn, getProductsOnCart);
+routerCart.post('/:id/products', isLoggedIn, addProductToCart);
+routerCart.get('/:id/order', isLoggedIn, generateOrder);
+routerCart.delete('/:id/products/:id_prod', isLoggedIn, deleteProductFromCart);

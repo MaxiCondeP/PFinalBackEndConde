@@ -53,3 +53,28 @@ export const getOrderMail = async (usrName, products) => {
         logger.log("error", `Mail error ${err}`);
     }
 }
+
+export const getOrderMailToUsr = async (usr, order) => {
+    
+    let mailSubject= `La orden nro ${order.id}, fue generada`;
+    if(order.state=="confirmada"){
+        mailSubject=`Confirmación de orden nro ${order.id}`
+    }else if(order.state=="cancelada"){
+        mailSubject= `La orden nro ${order.id}, fue cancelada`
+    }
+
+    let html=getProductsHTML(order.products);
+    const mailOptions = {
+        from: 'eccommerce API',
+        to: usr.email,
+        subject: mailSubject ,
+        html: html
+    }
+
+    try {
+        const info = await transporter.sendMail(mailOptions)
+        logger.log("info", `Mail sent ${info}`);
+    } catch (err) {
+        logger.log("error", `Mail error ${err}`);
+    }
+}

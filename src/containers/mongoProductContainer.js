@@ -1,8 +1,8 @@
-import {productModel} from "../models/modelsMongodb.js"
-import {Product} from '../models/productDTO.js'
+import { productModel } from "../models/modelsMongodb.js"
+import { Product } from '../models/productDTO.js'
 
 
-let instance=null;
+let instance = null;
 
 
 export class mongoProductContainer {
@@ -11,14 +11,14 @@ export class mongoProductContainer {
     }
 
 
-    static getContainer(){
-        if(!instance){
-            instance=new mongoProductContainer();
+    static getContainer() {
+        if (!instance) {
+            instance = new mongoProductContainer();
         }
         return instance;
     }
 
-    
+
     ///Traigo el archivo y devuelvo el array.
     async getAll() {
         try {
@@ -41,7 +41,7 @@ export class mongoProductContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let newProduct = new Product(product.title, product.price,product.thumbnail,product.stock, lastId)
+            let newProduct = new Product(product.title, product.price, product.thumbnail, product.stock, lastId, product.category)
             //agrego el producto a la mongo
             const newElement = new this.collection(newProduct);
             await newElement.save();
@@ -58,7 +58,7 @@ export class mongoProductContainer {
     async getByID(id) {
         try {
             let prod = await this.collection.findOne({ id: id });
-          
+
             return prod;
         } catch (err) {
             console.log("No se encontró el product", err)
@@ -71,10 +71,10 @@ export class mongoProductContainer {
             let prod = await this.getByID(id);
 
             if (prod) {
-                let updated = new Product(newProd.title, newProd.price,newProd.thumbnail,newProd.stock, id);
-                await this.collection.findOneAndUpdate({_id: prod._id},updated);
+                let updated = new Product(newProd.title, newProd.price, newProd.thumbnail, newProd.stock, id);
+                await this.collection.findOneAndUpdate({ _id: prod._id }, updated);
             }
-        } catch(err) {
+        } catch (err) {
             console.log("No se encontró el product", err)
             return { error: "No se encontró el product" }
         }
@@ -89,7 +89,7 @@ export class mongoProductContainer {
             //Busco el index del id, y si existe lo elimino del array
             const index = content.findIndex(prod => prod.id == id);
             if (index != -1) {
-                await this.collection.deleteOne({id: id})
+                await this.collection.deleteOne({ id: id })
             }
         } catch {
             console.log("No se pudo eliminar el product", err)
@@ -102,7 +102,7 @@ export class mongoProductContainer {
         try {
             await this.collection.deleteMany({});
         } catch (err) {
-            console.log("Error al eliminar los productos", err )
+            console.log("Error al eliminar los productos", err)
             return { error: "Error al eliminar los productos", err }
         }
     }
@@ -110,7 +110,7 @@ export class mongoProductContainer {
 
     async stockState(idProd, quantity) {
         let prod = await this.getByID(idProd);
-        
+
         let stock = prod.stock - quantity;
         if (stock >= 0) {
             return true;

@@ -1,8 +1,8 @@
 
-import{mongoProductContainer} from '../containers/mongoProductContainer.js'
+import { mongoProductContainer } from '../containers/mongoProductContainer.js'
 
-export default class mongoProductDao extends mongoProductContainer{
-    constructor(){
+export default class mongoProductDao extends mongoProductContainer {
+    constructor() {
         super();
     }
 }
