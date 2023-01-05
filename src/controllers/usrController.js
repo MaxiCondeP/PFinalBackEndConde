@@ -1,21 +1,25 @@
 import { logger } from "../../logger_config.js"
-import { __dirname,daoUsr } from "../../server.js";
+import { __dirname, daoUsr } from "../../server.js";
 import { socketChat } from "../utils/chat.js";
+import { signToken } from "../utils/auth.js";
+
 
 
 
 export const userSignup = (req, res) => {
-    req.session.user = req.user;
+    req.session.user = req.body;
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     res.status(200).send("SIGNED UP!")
     //res.redirect("/login");
 }
 
 export const userLogin = async (req, res) => {
-    req.session.user = req.user;
-    await socketChat(req.session.usr);
+    const user = req.user;
+    await socketChat(user);
+    const token =signToken(user);
+    req.session.usr=user;
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send("LOGGED OK!");
+    res.status(200).send({token: token, email: user.username});
 }
 
 
@@ -50,8 +54,8 @@ export const signupFail = (req, res) => {
     //res.sendFile(__dirname + "/public/failSignup.html");
 }
 
-export const userToAdmin= async(req, res)=>{
-    const id=req.params.id
+export const userToAdmin = async (req, res) => {
+    const id = req.params.id
     await daoUsr.userToAdmin(id);
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     res.status(200).send(`USR ID: ${id} is admin.`);

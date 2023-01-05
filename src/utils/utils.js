@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 export const isValidPassword = (userPassword, password) => {
-    return bcrypt.compareSync(userPassword, password)
+    return bcrypt.compareSync(userPassword.toString(), password.toString())
 
 }
 

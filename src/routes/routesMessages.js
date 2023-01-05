@@ -1,5 +1,6 @@
 import Router from 'express';
-import { isLoggedIn, isAdmin } from '../utils/middlewares.js';
+import { isAdmin } from '../utils/middlewares.js';
+import { authJWT } from "../utils/auth.js";
 import {
     getUsrMessages,
     getMessages
@@ -7,5 +8,5 @@ import {
 
 export const routerMessage = Router();
 
-routerMessage.get('/', isLoggedIn, getMessages);
-routerMessage.get('/:email', isLoggedIn, getUsrMessages);
+routerMessage.get('/', authJWT, getMessages);
+routerMessage.get('/:email', authJWT, getUsrMessages);

@@ -55,7 +55,7 @@ export class mongoUsrContainer {
             if (usr) {
                 return null;
             } else {
-                const hashedPassword = createHash(user.password);
+                const hashedPassword = createHash(user.password.toString());
                 const name = user.name;
                 const username = user.username;
                 const password = hashedPassword;
@@ -64,6 +64,7 @@ export class mongoUsrContainer {
                 const avatar = user.avatar
                 const isAdmin = false;
                 const newUser = new this.collection({ name, username, password, age, phone, avatar, isAdmin })
+                console.log(newUser)
                 await newUser.save();
                 return newUser;
             }

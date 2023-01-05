@@ -5,7 +5,6 @@ import { routerMessage } from './src/routes/routesMessages.js';
 import { routerIndex, routerInfo } from './src/routes/routes.js';
 import session from 'express-session';
 import passport from "passport";
-import { Strategy } from "passport-local";
 import MongoStore from "connect-mongo";
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -17,7 +16,7 @@ import os from "os";
 import parseArgs from "minimist";
 import { logger } from "./logger_config.js"
 import fileUpload from 'express-fileupload';
-import { localPassport } from "./src/utils/passport.js";
+import { localPassport } from "./src/utils/auth.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -43,6 +42,7 @@ export const daoMessages = await repoMessages.getDao();
 export const daoOrders = await repoOrders.getDao();
 
 
+
 const app = express();
 export const httpServer = new HTTPServer(app);
 
@@ -64,11 +64,13 @@ app.use(session({
 }));
 
 
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(fileUpload());
-const LocalStrategy = Strategy;
-await localPassport(passport, LocalStrategy);
+await localPassport(passport);
+
 
 app.use('/', routerIndex);
 app.use('/', routerInfo);

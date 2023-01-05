@@ -56,6 +56,8 @@ export const config = {
   PORT: process.env.PORT || 8080,
   PERSISTENCE: process.env.DATA_PERSISTENCE || "MONGO",
   SESSION_TIME: process.env.SESSION_TIME || 600,
+  SECRET_KEY: process.env.SECRET_KEY,
+  TOKEN_TIME: process.env.TOKEN_TIME || "30m"
 
 }
 

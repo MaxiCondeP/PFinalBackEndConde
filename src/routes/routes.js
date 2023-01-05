@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from "passport";
 import { isAdmin } from '../utils/middlewares.js';
+import { authJWT } from "../utils/auth.js";
 import { getInfo, redirectToInfo } from '../controllers/extraApisController.js'
 import {
   userSignup,
@@ -18,14 +19,17 @@ export const routerInfo = Router();
 
 routerIndex.get('/', checkLogin);
 routerIndex.post("/signup",
-  passport.authenticate("signup", { failureRedirect: "/failSignup", }), userSignup);
+  passport.authenticate("signup", { session: false }), userSignup);
+
 routerIndex.post('/login',
-  passport.authenticate("login", { failureRedirect: "/failLogin", }), userLogin);
-routerIndex.get("/login", checkLogin);
+  passport.authenticate("login", { failureRedirect: "/failLogin", session: false }), userLogin);
+
+
+routerIndex.get("/login", authJWT);
 routerIndex.get("/logout", userLogout);
 routerIndex.get("/failLogin", loginFail)
 routerIndex.get("/failSignup", signupFail);
-routerIndex.post("/userToAdmin/:id", isAdmin, userToAdmin);
+routerIndex.post("/userToAdmin/:id", authJWT, isAdmin, userToAdmin);
 routerInfo.get('/info', redirectToInfo);
 //Endpoint que voy a llamar desde el front a través de fetch
 routerInfo.get('/info/api', getInfo);

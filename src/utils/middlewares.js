@@ -1,7 +1,8 @@
 //validacion de administrador 
 export const isAdmin = (req, res, next) => {
-    let admin = req.session.user.isAdmin;
-    if (admin) {
+    let admin = req.session.usr.IsAdmin;
+    if (admin==true) {
+        
         next();
     } else {
         res.status(401).send({ error: `Error:Descripcion: Ruta ${req.route.path}/Método ${req.method} no autorizados` })
@@ -11,7 +12,7 @@ export const isAdmin = (req, res, next) => {
 //validacion de user loggeado 
 export const isLoggedIn = (req, res, next) => {
 
-    if (!req.session.user) {
+    if (!req.session.usr) {
         res.status(401).send({ error: `Error:Descripcion: USER NO LOGGEADO` })
     } else {
         next();

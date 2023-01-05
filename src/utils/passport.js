@@ -6,9 +6,6 @@ import { __dirname } from "../../server.js";
 
 
 
-
-
-
 export const localPassport = async (passport, LocalStrategy) => {
     passport.use("login", new LocalStrategy(async (username, password, done) => {
         const user = await daoUsr.getUsr(username, password);

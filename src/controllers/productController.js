@@ -1,4 +1,5 @@
 import { daoProducts } from '../../server.js'
+import { logger } from "../../logger_config.js"
 
 
 //Trae un prod por id  o todos si no hay param
