@@ -50,9 +50,8 @@ export const localPassport = async (passport) => {
         passwordField: 'password'
     }, async (req, username, password, done) => {
         const user = await daoUsr.newUsr(req.body);
-        console.log(user);
         if (user) {
-           // await getSignupMail(user);
+           await getSignupMail(user);
             return done(null, user);
         } else {
             return done(null, null);

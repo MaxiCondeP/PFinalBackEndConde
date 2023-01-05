@@ -25,11 +25,11 @@ const options = { default: { MODE: "fork" }, alias: { m: "MODE" } }
 const args = parseArgs(process.argv.slice(2), options);
 
 
-import repositoryCarts from "./src/modules/repositoryCarts.js";
-import repositoryProducts from "./src/modules/repositoryProducts.js";
-import repositoryUsr from "./src/modules/repositoryUsr.js";
-import repositoryMessages from "./src/modules/repositoryMessages.js";
-import repositoryOrders from "./src/modules/repositoryOrders.js";
+import repositoryCarts from "./src/modules/Cart/repositoryCarts.js";
+import repositoryProducts from "./src/modules/Product/repositoryProducts.js";
+import repositoryUsr from "./src/modules/User/repositoryUsr.js";
+import repositoryMessages from "./src/modules/Message/repositoryMessages.js";
+import repositoryOrders from "./src/modules/Order/repositoryOrders.js";
 const repoCarts = new repositoryCarts();
 const repoProducts = new repositoryProducts();
 const repoUsr = new repositoryUsr();
