@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import admin from 'firebase-admin'
-//import serviceAccount from './firebase/ecommerce-db-d9fbd-firebase-adminsdk-iwnjz-fb317452e3.js'
 import { logger } from "./logger_config.js"
 
 
