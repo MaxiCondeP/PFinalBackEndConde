@@ -1,6 +1,6 @@
-import { config } from '../config.js';
-import { User } from "../models/userDTO.js"
-import { isValidPassword, createHash } from "../utils/utils.js"
+import { config } from '../../../config.js';
+import { User } from "../../models/userDTO.js"
+import { isValidPassword, createHash } from "../../utils/utils.js"
 
 let instance = null
 
@@ -18,14 +18,30 @@ export class firebaseUsrContainer {
         return instance;
     }
 
+    async getAll() {
+        try {
+            const querySnapshot = await this.query.get();
+            let docs = querySnapshot.docs;
+            const content = docs.map((doc) => (doc.data()));
+            return (content);
+        }
+        catch (err) {
+            console.log("Error al traer datos de la base", err)
+            return { error: "Error al traer datos de la base", err }
+        }
+    }
+
 
 
     async getByUsr(username) {
         try {
-            const doc = this.query.doc(`${username}`);
-            const element = await doc.get();
-
-            return element.data();
+            const users = await this.getAll();
+            let user = users.find(c => c.username == username)
+            if (user) {
+                return user;
+            } else {
+                return null;
+            }
 
         } catch (err) {
             console.log("No se encontró el product", err)
@@ -37,15 +53,15 @@ export class firebaseUsrContainer {
 
     async getUsr(username, password) {
         try {
-            const user = awaitgetByUsr(username);
+            const user = await this.getByUsr(username);
             let passHash = " ";
             if (user) {
                 passHash = user.password;
             }
-            if (!user || !isValidPassword(password, passHash)) {
-                return null;
-            } else {
+            if (user && isValidPassword(password, passHash)) {
                 return user;
+            } else {
+                return null
             }
         } catch (err) {
             console.log("Error al traer datos de la base", err)
@@ -66,8 +82,9 @@ export class firebaseUsrContainer {
                 const age = user.age
                 const phone = user.phone;
                 const avatar = user.avatar
-                const isAdmin = false;
-                const newUser = new User(name, username, password, age, phone, avatar, isAdmin)
+                let isAdmin = false;
+                if (user.isAdmin) { isAdmin = user.isAdmin }
+                const newUser = { name, username, password, age, phone, avatar, isAdmin }
                 const doc = this.query.doc();
                 await doc.create(newUser);
                 return newUser;
@@ -77,23 +94,4 @@ export class firebaseUsrContainer {
             return { error: "Error al traer datos de la base", err }
         }
     }
-
-    async userToAdmin(id) {
-        try {
-            const usr = await this.usrById(id);
-            if (usr) {
-                usr.isAdmin = true;
-                await this.collection.findOneAndUpdate({ _id: usr._id }, usr);
-            }
-        } catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
-        }
-    }
-
-
-
-
-
-
 }

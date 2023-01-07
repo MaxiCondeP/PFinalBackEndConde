@@ -1,18 +1,18 @@
 
-import {config} from '../config.js';
+import { config } from '../../../config.js';
 
-let instance= null
+let instance = null
 
 
 export class firebaseProductContainer {
     constructor() {
         this.db = config.firebase.db;
-		this.query = this.db.collection('products');
+        this.query = this.db.collection('products');
     }
 
-    static getContainer(){
-        if(!instance){
-            instance=new firebaseProductContainer();
+    static getContainer() {
+        if (!instance) {
+            instance = new firebaseProductContainer();
         }
         return instance;
     }
@@ -21,12 +21,11 @@ export class firebaseProductContainer {
     async getAll() {
         try {
             const querySnapshot = await this.query.get();
-			let docs = querySnapshot.docs;
-			const content = docs.map((doc) => (doc.data()));
+            let docs = querySnapshot.docs;
+            const content = docs.map((doc) => (doc.data()));
             return (content);
         }
         catch (err) {
-            console.log("Error al traer datos de la base", err)
             return { error: "Error al traer datos de la base", err }
         }
     }
@@ -45,11 +44,10 @@ export class firebaseProductContainer {
             //agrego el producto a la bd
             let doc = this.query.doc(`${lastId}`);
             await doc.create(newProduct);
-            //muestro el último id
-            console.log(`El último id es: ${lastId}`);
+            //devuelvo el último id o null
+            if (lastId == -1) { lastId = null }
             return lastId;
         } catch (err) {
-            console.log("Error al modificar el archivo", err);
             return { error: "Error al modificar el archivo", err }
         }
     }
@@ -57,13 +55,16 @@ export class firebaseProductContainer {
     ////Devuelvo un  producto por el ID
     async getByID(id) {
         try {
-            const doc=   this.query.doc(`${id}`);
-            const element= await doc.get();
-            return element.data();
-           
+            const doc = this.query.doc(`${id}`);
+            const element = await doc.get();
+            let prod = element.data();
+            if (prod) {
+                return prod;
+            } else {
+                return null;
+            }
         } catch (err) {
-            console.log("No se encontró el product", err)
-            return { error: "No se encontró el product" }
+            return { error: "No se encontró el product" , err}
         }
     }
 
@@ -72,12 +73,11 @@ export class firebaseProductContainer {
             let prod = await this.getByID(id);
             if (prod) {
                 let updated = { ...newProd, id: id }
-                const doc=  this.query.doc(`${id}`);
-               console.log(await doc.update(updated))
+                const doc = this.query.doc(`${id}`);
+                console.log(await doc.update(updated))
             }
-        } catch (err){
-            console.log("No se encontró el product", err)
-            return { error: "No se encontró el product" }
+        } catch (err) {
+            return { error: "No se encontró el product", err }
         }
 
     }
@@ -93,7 +93,6 @@ export class firebaseProductContainer {
                 await this.query.doc(`${id}`).delete();
             }
         } catch {
-            console.log("No se pudo eliminar el product", err)
             return { error: "No se pudo eliminar el product" }
         }
     }
@@ -105,48 +104,47 @@ export class firebaseProductContainer {
 
             const batchSize = snapshot.size;
             if (batchSize === 0) {
-              // Valida que no queden documentos
-              resolve();
-              return;
+                // Valida que no queden documentos
+                resolve();
+                return;
             }
-          
+
             //Elimina documentos
             const batch = db.batch();
             snapshot.docs.forEach((doc) => {
-              batch.delete(doc.ref);
+                batch.delete(doc.ref);
             });
             await batch.commit();
-          
+
 
             process.nextTick(() => {
-              deleteQueryBatch(db, query, resolve);
+                deleteQueryBatch(db, query, resolve);
             });
         } catch (err) {
-            console.log("Error al eliminar los productos", err )
             return { error: "Error al eliminar los productos", err }
         }
     }
 
 
-   async stockState(idProd, quantity) {
-       let prod = await this.getByID(idProd);
-       let stock = prod.stock - quantity;
-       if (stock >= 0) {
-           return true;
-       } else {
-           return false;
-       }
-   }
+    async stockState(idProd, quantity) {
+        let prod = await this.getByID(idProd);
+        let stock = prod.stock - quantity;
+        if (stock >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-   async stockUpdate(idProd, quantity) {
-       let prod = await this.getByID(idProd);
-       let stock = prod.stock - quantity;
-       let content = await this.getAll();
-       let index = content.findIndex(p => p.id == idProd);
-       if ((stock >= 0) && (index != -1)) {
-           prod.stock = stock;
-       }
-       await this.editByID(idProd, prod);
-   }
+    async stockUpdate(idProd, quantity) {
+        let prod = await this.getByID(idProd);
+        let stock = prod.stock - quantity;
+        let content = await this.getAll();
+        let index = content.findIndex(p => p.id == idProd);
+        if ((stock >= 0) && (index != -1)) {
+            prod.stock = stock;
+        }
+        await this.editByID(idProd, prod);
+    }
 }
 

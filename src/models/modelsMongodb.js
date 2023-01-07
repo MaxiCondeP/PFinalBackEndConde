@@ -20,7 +20,8 @@ const schemaProduct = new mongoose.Schema({
     thumbnail: { type: String, required: true, max: 400 },
     timestamp: { type: Number, required: true },
     stock: { type: Number, required: true },
-    category: { type: String }
+    category: { type: String },
+    quantity:{type: Number}
 });
 
 const schemaUsr = new mongoose.Schema({
@@ -30,6 +31,7 @@ const schemaUsr = new mongoose.Schema({
     age: { type: Number, required: true },
     phone: { type: String, required: true },
     avatar: { type: String, required: true, max: 400 },
+    isAdmin:{type: Boolean}
 });
 
 const schemaMessage = new mongoose.Schema({
@@ -49,8 +51,8 @@ const schemaMessage = new mongoose.Schema({
 const schemaOrder = new mongoose.Schema({
     id: { type: Number, required: true },
     timestamp: { type: Number, required: true },
-    usr: { type: Object, required: true },
-    products: { type: Array, required: true },
+    usr: { type: String, required: true },
+    products:  { type: Array, required: true },
     state: { type: String, required: true }
 });
 

@@ -31,7 +31,7 @@ export const getSignupMail = async (user) => {
         const info = await transporter.sendMail(mailOptions)
         logger.log("info", `Mail sent ${info}`);
     } catch (err) {
-        logger.log("error", `Mail error ${info}`);
+        logger.log("error", `Mail error ${err}`);
     }
 }
 

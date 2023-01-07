@@ -1,5 +1,5 @@
-import { config } from '../config.js';
-import {Cart} from '../models/cartDTO.js'
+import { config } from '../../../config.js';
+import {Cart} from '../../models/cartDTO.js'
 
 
 let instance=null;

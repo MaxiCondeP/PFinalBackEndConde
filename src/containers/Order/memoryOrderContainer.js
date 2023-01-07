@@ -1,8 +1,8 @@
-import { Order } from '../models/orderDTO.js'
+import { Order } from '../../models/orderDTO.js'
 
 let instance = null;
 
-export class OrderContainer {
+export class memoryOrderContainer {
 
     constructor() {
         this.orders = [];
@@ -10,7 +10,7 @@ export class OrderContainer {
 
     static getContainer() {
         if (!instance) {
-            instance = new CartContainer();
+            instance = new memoryOrderContainer();
         }
         return instance;
     }

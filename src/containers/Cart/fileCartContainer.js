@@ -12,9 +12,9 @@ export class CartContainer {
     }
 
 
-    static getContainer() {
+    static getContainer(fileName) {
         if (!instance) {
-            instance = new CartContainer();
+            instance = new CartContainer(fileName);
         }
         return instance;
     }
@@ -55,6 +55,7 @@ export class CartContainer {
             }
             let cart = new Cart();
             let newCart = { ...cart, id: lastId };
+            console.log(content)
             //agrego el producto al array y lo escribo en el archivo
             content.push(newCart);
             await this.write(content);
@@ -95,7 +96,7 @@ export class CartContainer {
         if (cart) {
             return (cart.products);
         } else {
-            return (cart);
+            return null;
         }
     }
 
@@ -138,7 +139,7 @@ export class CartContainer {
             }
             await this.updateCart(idCart, cart.products);
         } catch (err) {
-            console.log('Error al agregar producto', err)
+            return { error: "Error , no se pudo agregar el producto", err }
         }
 
     }
@@ -146,7 +147,6 @@ export class CartContainer {
 
     //Elimino prod de carrito 
     async removeFromCart(idCart, idProd) {
-
         let cart = await this.getByID(idCart);
         const index = cart.products.findIndex(p => p.id == idProd);
         if (index != -1) {
@@ -154,9 +154,8 @@ export class CartContainer {
             cart.products.splice(index, 1)
             await this.updateCart(idCart, cart.products);
             return deletedProd;
-
         } else {
-            return { error: "Error , no se encontró el producto a eliminar", err }
+            return null;
         }
     }
 

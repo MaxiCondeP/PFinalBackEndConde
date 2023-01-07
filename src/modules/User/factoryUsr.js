@@ -23,7 +23,7 @@ export class daoFactory {
 				break;
 			default:
 				const { default: fileUsrDao } = await import('../../daos/User/fileUsrDao.js');
-				return daoUsr = fileUsrDao.getContainer('Usr');
+				return daoUsr = fileUsrDao.getContainer('users');
 				break;
 		}
 

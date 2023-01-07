@@ -26,7 +26,6 @@ export class mongoProductContainer {
             return (content);
         }
         catch (err) {
-            console.log("Error al traer datos de la base", err)
             return { error: "Error al traer datos de la base", err }
         }
     }
@@ -45,11 +44,10 @@ export class mongoProductContainer {
             //agrego el producto a la mongo
             const newElement = new this.collection(newProduct);
             await newElement.save();
-            //muestro el último id
-            console.log(`El último id es: ${lastId}`);
+            //devuelvo el último id o null
+            if (lastId == -1) { lastId = null }
             return lastId;
         } catch (err) {
-            console.log("Error al modificar el archivo", err);
             return { error: "Error al modificar el archivo", err }
         }
     }
@@ -58,10 +56,13 @@ export class mongoProductContainer {
     async getByID(id) {
         try {
             let prod = await this.collection.findOne({ id: id });
+            if (prod) {
+                return prod;
+            } else {
+                return null;
+            }
 
-            return prod;
         } catch (err) {
-            console.log("No se encontró el product", err)
             return { error: "No se encontró el product" }
         }
     }
@@ -75,7 +76,6 @@ export class mongoProductContainer {
                 await this.collection.findOneAndUpdate({ _id: prod._id }, updated);
             }
         } catch (err) {
-            console.log("No se encontró el product", err)
             return { error: "No se encontró el product" }
         }
 
@@ -92,7 +92,6 @@ export class mongoProductContainer {
                 await this.collection.deleteOne({ id: id })
             }
         } catch {
-            console.log("No se pudo eliminar el product", err)
             return { error: "No se pudo eliminar el product" }
         }
     }
@@ -102,7 +101,6 @@ export class mongoProductContainer {
         try {
             await this.collection.deleteMany({});
         } catch (err) {
-            console.log("Error al eliminar los productos", err)
             return { error: "Error al eliminar los productos", err }
         }
     }
@@ -110,7 +108,6 @@ export class mongoProductContainer {
 
     async stockState(idProd, quantity) {
         let prod = await this.getByID(idProd);
-
         let stock = prod.stock - quantity;
         if (stock >= 0) {
             return true;

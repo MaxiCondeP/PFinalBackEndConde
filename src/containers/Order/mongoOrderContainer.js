@@ -40,10 +40,11 @@ export class mongoOrderContainer {
                 lastId = content[content.length - 1].id + 1;
             }
             let order = new Order(user, products);
-            let newOrder = { ...order, id: lastId };
+            order.id=lastId;
             //agrego el producto al array y lo escribo en el archivo
-            const result = await this.collection.insertOne(newOrder);
-            return result;
+            const newElement = new this.collection(order);
+            await newElement.save();
+            return newElement;
         } catch (err) {
             return { error: "Error al crear la orden", err }
         }

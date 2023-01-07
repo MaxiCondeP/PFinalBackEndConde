@@ -62,7 +62,8 @@ export class mongoUsrContainer {
                 const age = user.age
                 const phone = user.phone;
                 const avatar = user.avatar
-                const isAdmin = false;
+                let isAdmin = false;
+                if(user.isAdmin) {isAdmin=user.isAdmin}
                 const newUser = new this.collection({ name, username, password, age, phone, avatar, isAdmin })
                 await newUser.save();
                 return newUser;

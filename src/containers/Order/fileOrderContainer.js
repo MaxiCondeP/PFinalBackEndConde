@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Order } from '../models/orderDTO.js'
+import { Order } from '../../models/orderDTO.js'
 
 let instance = null;
 
@@ -10,9 +10,9 @@ export class OrderContainer {
         this.fileRoute = "./public/" + this.name + ".txt";
     }
 
-    static getContainer() {
+    static getContainer(fileName) {
         if (!instance) {
-            instance = new CartContainer();
+            instance = new OrderContainer(fileName);
         }
         return instance;
     }
@@ -23,8 +23,6 @@ export class OrderContainer {
             //Parseo a JSON
             const fileContent = JSON.stringify(content, null, "\t");
             await fs.promises.writeFile(this.fileRoute, fileContent);
-            //muestro el archivo escrito
-            console.log(content);
         } catch (err) {
             return { error: "Error al escribir el archivo", err }
         }
@@ -55,7 +53,7 @@ export class OrderContainer {
             //agrego el producto al array y lo escribo en el archivo
             content.push(newOrder);
             await this.write(content);
-            return lastId;
+            return newOrder;
         } catch (err) {
             return { error: "Error al crear la orden", err }
         }

@@ -8,12 +8,20 @@ export const getProducts = async (req, res) => {
     if (id) {
         let prod = await daoProducts.getByID(id);
         logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-        res.status(200).send(prod);
+        if(prod){
+            res.status(200).send(prod);
+        }else{
+            res.status(200).json("Producto no encontrado")
+        }
 
     } else {
         let prods = await daoProducts.getAll();
+        if(prods.length>0){
+            res.status(200).send(prods);
+        }else{
+            res.status(200).send('No se encontraron productos')
+        }
         logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-        res.status(200).send(prods)
     }
 }
 
@@ -21,8 +29,11 @@ export const getProducts = async (req, res) => {
 export const newProduct = async (req, res) => {
     let id = await daoProducts.save(req.body);
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send(`Product created!`);
-    
+    if(!isNaN(id)){
+        res.status(200).send(`Producto creado!`);
+    }else{
+        res.status(500).send(`No se pudo crear el producto`);
+    }
 }
 
 //Modifica un producto con su id

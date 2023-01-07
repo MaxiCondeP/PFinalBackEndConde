@@ -15,5 +15,5 @@ routerCart.post('/', authJWT, newCart);
 routerCart.delete('/:id', authJWT, deleteCart);
 routerCart.get('/:id/products', authJWT, getProductsOnCart);
 routerCart.post('/:id/products', authJWT, addProductToCart);
-routerCart.get('/:id/order', authJWT, generateOrder);
+routerCart.post('/:id/order', authJWT, generateOrder);
 routerCart.delete('/:id/products/:id_prod', authJWT, deleteProductFromCart);

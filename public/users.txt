@@ -1,0 +1,21 @@
+[
+	{
+		"name": "admin 123456",
+		"username": "admin@123456.com",
+		"password": "$2b$10$Qz8YOm4ts/.UyywpI6MVdOadmDxpVxV0Rv8bXbdVHORNn4gVRNc5a",
+		"age": 32,
+		"phone": 2236835362,
+		"avatar": "sfsdfsfsfsfs",
+		"IsAdmin": true
+	},
+	{
+		"name": "user 123456",
+		"username": "user@123456.com",
+		"password": "$2b$10$1XvcAGfkT/Z60Yk0ke9gyO0zi785qBLHJA/sFKtxZqNmxg/hZ0Y6W",
+		"age": 32,
+		"phone": 2236835362,
+		"avatar": "sfsdfsfsfsfs",
+		"IsAdmin": false,
+		"isAdmin": true
+	}
+]

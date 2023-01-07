@@ -1,4 +1,3 @@
-
 import * as fs from 'fs';
 
 let instance=null;
@@ -10,9 +9,9 @@ export class ProdContainer {
         this.fileRoute = "./public/" + this.name + ".txt";
     }
 
-    static getContainer(){
+    static getContainer(fileName){
         if(!instance){
-            instance=new ProdContainer();
+            instance=new ProdContainer(fileName);
         }
         return instance;
     } 
@@ -35,7 +34,7 @@ export class ProdContainer {
             const fileContent = JSON.stringify(content, null, "\t");
             await fs.promises.writeFile(this.fileRoute, fileContent);
             //muestro el archivo escrito
-            console.log(content);
+
         } catch (err) {
             return { error: "Error al escribir el archivo", err }
         }
@@ -54,8 +53,8 @@ export class ProdContainer {
             //agrego el producto al array y lo escribo en el archivo
             content.push(newProduct);
             await this.write(content);
-            //muestro el último id
-            console.log(`El último id es: ${lastId}`);
+            //devuelvo el último id o null
+            if (lastId==-1){lastId=null}
             return lastId;
         } catch (err) {
             return { error: "Error al modificar el archivo", err }
@@ -68,11 +67,9 @@ export class ProdContainer {
         let content = await this.getAll();
         const prod = content.find(prod => prod.id == id);
         if (prod) {
-            //Muestro y devuelvo el producto
-            console.log(prod);
             return prod;
         } else {
-            return { error: "No se encontró el producto" }
+            return null;
         }
     }
 
@@ -95,10 +92,11 @@ export class ProdContainer {
         //Busco el index del id, y si existe lo elimino del array
         const index = content.findIndex(prod => prod.id == id);
         if (index != -1) {
-            content.splice(index, 1);
+            let prod= content.splice(index, 1);
             await this.write(content);
+            return prod
         } else {
-            return { error: "No se encontró el producto" }
+            return null;
         }
     }
 
@@ -116,6 +114,7 @@ export class ProdContainer {
 
     async stockState(idProd, quantity) {
         let prod = await this.getByID(idProd);
+        console.log(prod)
         let stock = prod.stock - quantity;
         if (stock >= 0) {
             return true;

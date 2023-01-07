@@ -1,4 +1,4 @@
-import { Cart } from '../models/cartDTO.js'
+import { Cart } from '../../models/cartDTO.js'
 let instance = null
 
 export class memoryCartContainer {
@@ -10,7 +10,7 @@ export class memoryCartContainer {
 
     static getContainer() {
         if (!instance) {
-            instance = new CartContainer();
+            instance = new memoryCartContainer();
         }
         return instance;
     }
@@ -115,7 +115,7 @@ export class memoryCartContainer {
             this.updateCart(idCart, cart.products);
             return deletedProd;
         } else {
-            return { error: "Error , no se encontró el producto a eliminar", err }
+            return null
         }
     }
 

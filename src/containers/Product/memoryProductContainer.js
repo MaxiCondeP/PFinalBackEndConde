@@ -31,8 +31,8 @@ export class ProdContainer {
         //agrego el producto al array y lo escribo en el archivo
         content.push(newProduct);
         this.products = content;
-        //muestro el último id
-        console.log(`El último id es: ${lastId}`);
+        //devuelvo el último id o null
+        if (lastId == -1) { lastId = null }
         return lastId;
 
     }
@@ -47,7 +47,7 @@ export class ProdContainer {
             console.log(prod);
             return prod;
         } else {
-            return { error: "No se encontró el producto" }
+            return null;
         }
     }
 

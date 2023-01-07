@@ -72,12 +72,13 @@ app.use(passport.session());
 await localPassport(passport);
 
 
+
+app.use('/products', routerProd);
+app.use('/cart', routerCart);
+app.use('/orders', routerOrder);
+app.use('/chat', routerMessage);
 app.use('/', routerIndex);
 app.use('/', routerInfo);
-app.use('/api/products', routerProd);
-app.use('/api/cart', routerCart);
-app.use('/api/orders', routerOrder);
-app.use('/api/chat', routerMessage);
 
 
 const srv = httpServer;

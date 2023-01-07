@@ -7,7 +7,7 @@ export const isValidPassword = (userPassword, password) => {
 
 
 export const createHash = (password) => {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+    return bcrypt.hashSync(password.toString(), bcrypt.genSaltSync(10), null);
 }
 
 

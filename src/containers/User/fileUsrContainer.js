@@ -1,5 +1,7 @@
-import { User } from "../models/userDTO.js"
-import { isValidPassword, createHash } from "../utils/utils.js"
+import { User } from "../../models/userDTO.js"
+import { isValidPassword, createHash } from "../../utils/utils.js"
+
+
 import * as fs from 'fs';
 
 let instance = null;
@@ -14,33 +16,49 @@ export class fileUsrContainer {
     }
 
 
-    static getContainer() {
+    static getContainer(fileName) {
         if (!instance) {
-            instance = new fileUsrContainer();
+            instance = new fileUsrContainer(fileName);
         }
         return instance;
     }
 
+
+
+    //Recibo el contenido y lo escribo en el archivo
+    async write(content) {
+        try {
+            //Parseo a JSON
+            const fileContent = JSON.stringify(content, null, "\t");
+            await fs.promises.writeFile(this.fileRoute, fileContent);
+            //muestro el archivo escrito
+        } catch (err) {
+            return { error: "Error al escribir el archivo", err }
+        }
+    }
+
+
     async getUsr(username, password) {
         try {
-            const user = getByUsr(username);
+            const user = await this.getByUsr(username);
             let passHash = " ";
             if (user) {
                 passHash = user.password;
             }
-            if (!user || !isValidPassword(password, passHash)) {
-                return null;
-            } else {
+            if (user && isValidPassword(password, passHash)) {
                 return user;
+            } else {
+                return null
             }
+
         } catch (err) {
-            console.log("Error al traer datos de la base", err)
+            //console.log("Error al traer datos de la base", err)
             return { error: "Error al traer datos de la base", err }
         }
     }
 
     //Recibo el contenido y lo escribo en el archivo
-    async write(user) {
+    async newUsr(user) {
         try {
             const usr = await this.getUsr(user.username, user.password);
             if (usr) {
@@ -53,13 +71,14 @@ export class fileUsrContainer {
                 const age = user.age
                 const phone = user.phone;
                 const avatar = user.avatar
-                const isAdmin = false;
+                let isAdmin = false;
+                if (user.isAdmin) { isAdmin = user.isAdmin }
                 const newUser = new User(name, username, password, age, phone, avatar, isAdmin)
                 //Parseo a JSON
                 let content = await this.getAll();
                 content.push(newUser);
-                const fileContent = JSON.stringify(content, null, "\t");
-                await fs.promises.writeFile(this.fileRoute, fileContent);
+                await this.write(content);
+                return (newUser)
             }
         } catch (err) {
             return { error: "Error al escribir el archivo", err }
@@ -81,11 +100,14 @@ export class fileUsrContainer {
     async getByUsr(username) {
         //traigo el array y lo filtro por ID
         let content = await this.getAll();
-        const usr = content.find(c => c.username == username);
-        if (usr) {
+        let usr = null;
+        if (content.length > 0) {
+            usr = content.find(c => c.username == username);
+        }
+        if (usr !== null) {
             return usr;
         } else {
-            return { error: "No se encontró el carrito" }
+            return null;
         }
     }
 
@@ -96,23 +118,7 @@ export class fileUsrContainer {
         if (usr) {
             return usr;
         } else {
-            return { error: "No se encontró el carrito" }
-        }
-    }
-
-    async userToAdmin(username) {
-        try {
-            const usr = await this.getByUsr(username);
-            if (usr) {
-                usr.isAdmin = true;
-                let content = await this.getAll();
-                const usrIndex = content.findIndex(c => c.username == username);
-                content[usrIndex].isAdmin=true;
-                const fileContent = JSON.stringify(content, null, "\t");
-                await fs.promises.writeFile(this.fileRoute, fileContent);
-            }
-        } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            return { error: "No se encontró el user" }
         }
     }
 

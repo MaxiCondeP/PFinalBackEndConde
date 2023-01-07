@@ -5,7 +5,7 @@ import { logger } from "./logger_config.js"
 
 
 dotenv.config();
-const serviceAccount={
+const serviceAccount = {
   "type": "service_account",
   "project_id": process.env.FB_PROYECT_ID,
   "private_key_id": process.env.FB_PRIVATE_KEY_ID,
@@ -18,23 +18,34 @@ const serviceAccount={
   "client_x509_cert_url": process.env.FB_CLIENT_X509_CERT_URL
 };
 
-//prueba de conexion firebase
-try {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+let dbfirebase = "";
+let dbmongo = "";
+
+if (process.env.DATA_PERSISTENCE == "FIREBASE") {
+  try {
+    //prueba de conexion firebase
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    dbfirebase = admin.firestore();
+    logger.log("info", "Connected ok to Firebase");
+  } catch (error) {
+    console.log(error);
+  }
+} else if (process.env.DATA_PERSISTENCE == "MONGO") {
+  //prueba de conexion mongo
+  dbmongo = mongoose.connection;
+  dbmongo.on('error', console.error.bind(console, 'connection error:'));
+  dbmongo.once('open', () => {
+    logger.log("info", 'Connected ok to mongoDB');
   });
 
-  logger.log("info", "Connected ok to Firebase");
-} catch (error) {
-  console.log(error);
 }
 
-//prueba de conexion mongo
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  logger.log("info", 'Connected ok to mongoDB');
-});
+
+
+
+
 
 
 export const config = {
@@ -43,7 +54,7 @@ export const config = {
     options: { useNewUrlParser: true, useUnifiedTopology: true }
   },
   firebase: {
-    db: admin.firestore(),
+    db: dbfirebase
   },
   admin_data: {
     admin_email: process.env.ADMIN_EMAIL,

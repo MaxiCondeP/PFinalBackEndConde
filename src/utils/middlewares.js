@@ -1,8 +1,8 @@
 //validacion de administrador 
 export const isAdmin = (req, res, next) => {
-    let admin = req.session.usr.IsAdmin;
+    let admin = req.session.usr.isAdmin;
+    console.log(req.session.usr)
     if (admin==true) {
-        
         next();
     } else {
         res.status(401).send({ error: `Error:Descripcion: Ruta ${req.route.path}/Método ${req.method} no autorizados` })

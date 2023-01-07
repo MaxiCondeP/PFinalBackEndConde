@@ -1,5 +1,5 @@
-import { config } from '../config.js';
-import { Order } from '../models/orderDTO.js'
+import { config } from '../../../config.js';
+import { Order } from '../../models/orderDTO.js'
 
 
 let instance = null;

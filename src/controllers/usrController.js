@@ -16,10 +16,10 @@ export const userSignup = (req, res) => {
 export const userLogin = async (req, res) => {
     const user = req.user;
     await socketChat(user);
-    const token =signToken(user);
-    req.session.usr=user;
+    const token = signToken(user);
+    req.session.usr = user;
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send({token: token, email: user.username});
+    res.status(200).send({ token: token, email: user.username });
 }
 
 
@@ -45,20 +45,11 @@ export const userLogout = (req, res) => {
 export const loginFail = (req, res) => {
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     res.status(401).send(`LOGIN FAIL`);
-    //res.sendFile(__dirname + "/public/failLogin.html");
 }
 
 export const signupFail = (req, res) => {
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     res.status(401).send(`SIGNUP FAIL`);
-    //res.sendFile(__dirname + "/public/failSignup.html");
-}
-
-export const userToAdmin = async (req, res) => {
-    const id = req.params.id
-    await daoUsr.userToAdmin(id);
-    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send(`USR ID: ${id} is admin.`);
 }
 
 export const badRoute = (req, res) => {

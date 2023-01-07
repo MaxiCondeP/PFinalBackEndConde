@@ -1,5 +1,5 @@
-import { User } from '../models/userDTO.js'
-import { isValidPassword, createHash } from "../utils/utils.js"
+import { User } from '../../models/userDTO.js'
+import { isValidPassword, createHash } from "../../utils/utils.js"
 
 
 let instance = null;
@@ -15,7 +15,7 @@ export class memoryUsrContainer {
 
     static getContainer() {
         if (!instance) {
-            instance = new fileUsrContainer();
+            instance = new memoryUsrContainer();
         }
         return instance;
     }
@@ -29,7 +29,7 @@ export class memoryUsrContainer {
 
     getUsr(username, password) {
         try {
-            const user = getByUsr(username);
+            const user = this.getByUsr(username);
             let passHash = " ";
             if (user) {
                 passHash = user.password;
@@ -48,8 +48,8 @@ export class memoryUsrContainer {
     //Recibo el contenido y lo escribo en el archivo
     newUsr(user) {
         try {
-            const usr = this.getUsr(user.username, user.password);
-            if (usr) {
+            const usr = this.getByUsr(user.username);
+            if (usr != null) {
                 return null;
             } else {
                 const hashedPassword = createHash(user.password);
@@ -59,10 +59,11 @@ export class memoryUsrContainer {
                 const age = user.age
                 const phone = user.phone;
                 const avatar = user.avatar
-                const isAdmin = false;
+                let isAdmin = false;
+                if (user.isAdmin) { isAdmin = user.isAdmin }
                 const newUser = new User(name, username, password, age, phone, avatar, isAdmin)
-                //Parseo a JSON
                 this.users.push(newUser);
+                return newUser;
             }
         } catch (err) {
             return { error: "Error al escribir el archivo", err }
@@ -72,27 +73,14 @@ export class memoryUsrContainer {
     getByUsr(username) {
         //traigo el array y lo filtro por ID
         let content = this.users;
-        const usr = content.find(c => c.username == username);
+        let usr = null;
+        if (this.users.length > 0) {
+            usr = content.find(c => c.username == username);
+        }
         if (usr) {
             return usr;
         } else {
-            return { error: "No se encontró el usuario" }
+            return null;
         }
     }
-
-
-    userToAdmin(username) {
-        try {
-            const usr = this.getByUsr(username);
-            if (usr) {
-                usr.isAdmin = true;
-                const usrIndex = this.users.findIndex(c => c.username == username);
-                this.users[usrIndex].isAdmin = true;
-
-            }
-        } catch (err) {
-            return { error: "Error al modificar el usuario", err }
-        }
-    }
-
 }
