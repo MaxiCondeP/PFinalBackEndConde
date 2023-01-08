@@ -11,9 +11,8 @@ export const getProducts = async (req, res) => {
         if(prod){
             res.status(200).send(prod);
         }else{
-            res.status(200).json("Producto no encontrado")
+            res.status(200).send('Producto no encontrado')
         }
-
     } else {
         let prods = await daoProducts.getAll();
         if(prods.length>0){
@@ -23,6 +22,18 @@ export const getProducts = async (req, res) => {
         }
         logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     }
+}
+
+export const getByCategory=async(req,res)=>{
+    let category = req.params.category;
+    let products = await daoProducts.getByCategory(category);
+        logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
+        if(products){
+            res.status(200).send(products);
+        }else{
+            res.status(200).send(`No hay productos de la categoría: ${category}`)
+        }
+
 }
 
 //Agrega un producto y dev el id
@@ -41,7 +52,7 @@ export const updateProduct = async (req, res) => {
     let id = req.params.id;
     await daoProducts.editByID(id, req.body);
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send(`Product updated.`);
+    res.status(200).send(`Producto editado.`);
 }
 
 //Elimina un producto por id
@@ -49,5 +60,5 @@ export const deleteProduct=  async (req, res) => {
     let id = req.params.id;
     await daoProducts.deleteById(id);
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send(`Product deleted.`);
+    res.status(200).send(`Producto eliminado.`);
 }

@@ -1,5 +1,5 @@
 import { config } from '../../../config.js';
-import { User } from "../../models/userDTO.js"
+import { logger } from "../../../logger_config.js"
 import { isValidPassword, createHash } from "../../utils/utils.js"
 
 let instance = null
@@ -26,8 +26,7 @@ export class firebaseUsrContainer {
             return (content);
         }
         catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -42,10 +41,8 @@ export class firebaseUsrContainer {
             } else {
                 return null;
             }
-
         } catch (err) {
-            console.log("No se encontró el product", err)
-            return { error: "No se encontró el product" }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
 
     }
@@ -64,8 +61,7 @@ export class firebaseUsrContainer {
                 return null
             }
         } catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -90,8 +86,7 @@ export class firebaseUsrContainer {
                 return newUser;
             }
         } catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al guardar el usuario ${err}`);
         }
     }
 }

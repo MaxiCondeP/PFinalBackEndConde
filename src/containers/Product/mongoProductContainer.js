@@ -1,5 +1,6 @@
 import { productModel } from "../../models/modelsMongodb.js"
 import { Product } from '../../models/productDTO.js'
+import { logger } from "../../../logger_config.js"
 
 
 let instance = null;
@@ -26,7 +27,7 @@ export class mongoProductContainer {
             return (content);
         }
         catch (err) {
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -48,7 +49,7 @@ export class mongoProductContainer {
             if (lastId == -1) { lastId = null }
             return lastId;
         } catch (err) {
-            return { error: "Error al modificar el archivo", err }
+            logger.log("error", `Error al guardar el producto ${err}`);
         }
     }
 
@@ -61,22 +62,31 @@ export class mongoProductContainer {
             } else {
                 return null;
             }
-
         } catch (err) {
-            return { error: "No se encontró el product" }
+            logger.log("error", `No se encontró el el producto ${err}`);
+        }
+    }
+
+    async getByCategory(category) {
+        //traigo el array y lo filtro por ID
+        let content = await this.getAll();
+        const prod = content.filter(prod => prod.category == category);
+        if (prod.length>0) {
+            return prod;
+        } else {
+            return null;
         }
     }
 
     async editByID(id, newProd) {
         try {
             let prod = await this.getByID(id);
-
             if (prod) {
                 let updated = new Product(newProd.title, newProd.price, newProd.thumbnail, newProd.stock, id);
                 await this.collection.findOneAndUpdate({ _id: prod._id }, updated);
             }
         } catch (err) {
-            return { error: "No se encontró el product" }
+            logger.log("error", `No se pudo modificar el el producto ${err}`);
         }
 
     }
@@ -92,7 +102,7 @@ export class mongoProductContainer {
                 await this.collection.deleteOne({ id: id })
             }
         } catch {
-            return { error: "No se pudo eliminar el product" }
+            logger.log("error", `No se pudo eliminar el producto ${err}`);
         }
     }
 
@@ -101,11 +111,11 @@ export class mongoProductContainer {
         try {
             await this.collection.deleteMany({});
         } catch (err) {
-            return { error: "Error al eliminar los productos", err }
+            logger.log("error", `Error al eliminar los productos ${err}`);
         }
     }
 
-
+    ////verifico si es posible la compra en cuanto a stock
     async stockState(idProd, quantity) {
         let prod = await this.getByID(idProd);
         let stock = prod.stock - quantity;
@@ -116,9 +126,11 @@ export class mongoProductContainer {
         }
     }
 
+
+    ////actualizo stock
     async stockUpdate(idProd, quantity) {
         let prod = await this.getByID(idProd);
-        let stock = await prod.stock - quantity;
+        let stock = prod.stock - quantity;
         let content = await this.getAll();
         let index = content.findIndex(p => p.id == idProd);
         if ((stock >= 0) && (index != -1)) {

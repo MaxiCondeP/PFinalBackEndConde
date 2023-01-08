@@ -1,6 +1,7 @@
 import * as fs from 'fs';
+import { logger } from "../../../logger_config.js"
 
-let instance=null;
+let instance = null;
 
 
 export class ProdContainer {
@@ -9,12 +10,12 @@ export class ProdContainer {
         this.fileRoute = "./public/" + this.name + ".txt";
     }
 
-    static getContainer(fileName){
-        if(!instance){
-            instance=new ProdContainer(fileName);
+    static getContainer(fileName) {
+        if (!instance) {
+            instance = new ProdContainer(fileName);
         }
         return instance;
-    } 
+    }
 
     ///Traigo el archivo y devuelvo el array.
     async getAll() {
@@ -23,7 +24,7 @@ export class ProdContainer {
             return JSON.parse(content);
         }
         catch (err) {
-            return { error: "Error al leer el archivo", err }
+            logger.log("error", `Error al leer el archivo ${err}`);
         }
     }
 
@@ -33,10 +34,8 @@ export class ProdContainer {
             //Parseo a JSON
             const fileContent = JSON.stringify(content, null, "\t");
             await fs.promises.writeFile(this.fileRoute, fileContent);
-            //muestro el archivo escrito
-
         } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -54,10 +53,10 @@ export class ProdContainer {
             content.push(newProduct);
             await this.write(content);
             //devuelvo el último id o null
-            if (lastId==-1){lastId=null}
+            if (lastId == -1) { lastId = null }
             return lastId;
         } catch (err) {
-            return { error: "Error al modificar el archivo", err }
+            logger.log("error", `Error al modificar el archivo ${err}`);
         }
     }
 
@@ -73,14 +72,29 @@ export class ProdContainer {
         }
     }
 
+    async getByCategory(category) {
+        //traigo el array y lo filtro por ID
+        let content = await this.getAll();
+        const prod = content.filter(prod => prod.category == category);
+        if (prod.length>0) {
+            return prod;
+        } else {
+            return null;
+        }
+    }
+
     async editByID(id, newProd) {
-        let prod = await this.getByID(id);
-        if (prod) {
-            let updated = { ...newProd, id: id }
-            let products = await this.getAll();
-            let index = products.findIndex(p => p.id == id)
-            products.splice(index, 1, updated);
-            await this.write(products);
+        try {
+            let prod = await this.getByID(id);
+            if (prod) {
+                let updated = { ...newProd, id: id }
+                let products = await this.getAll();
+                let index = products.findIndex(p => p.id == id)
+                products.splice(index, 1, updated);
+                await this.write(products);
+            }
+        } catch (err) {
+            logger.log("error", `No se pudo modificar el el producto ${err}`);
         }
 
     }
@@ -88,15 +102,19 @@ export class ProdContainer {
 
     ///Elimino un producto por ID
     async deleteById(id) {
-        let content = await this.getAll();
-        //Busco el index del id, y si existe lo elimino del array
-        const index = content.findIndex(prod => prod.id == id);
-        if (index != -1) {
-            let prod= content.splice(index, 1);
-            await this.write(content);
-            return prod
-        } else {
-            return null;
+        try {
+            let content = await this.getAll();
+            //Busco el index del id, y si existe lo elimino del array
+            const index = content.findIndex(prod => prod.id == id);
+            if (index != -1) {
+                let prod = content.splice(index, 1);
+                await this.write(content);
+                return prod
+            } else {
+                return null;
+            }
+        } catch {
+            logger.log("error", `No se pudo eliminar el producto ${err}`);
         }
     }
 
@@ -107,7 +125,7 @@ export class ProdContainer {
             let content = [];
             await this.write(content);
         } catch (err) {
-            return { error: "Error al eliminar el archivo", err }
+            logger.log("error", `Error al eliminar los productos ${err}`);
         }
     }
 

@@ -30,7 +30,7 @@ if (process.env.DATA_PERSISTENCE == "FIREBASE") {
     dbfirebase = admin.firestore();
     logger.log("info", "Connected ok to Firebase");
   } catch (error) {
-    console.log(error);
+    logger.log("error", `${err}`);
   }
 } else if (process.env.DATA_PERSISTENCE == "MONGO") {
   //prueba de conexion mongo
@@ -41,11 +41,6 @@ if (process.env.DATA_PERSISTENCE == "FIREBASE") {
   });
 
 }
-
-
-
-
-
 
 
 export const config = {

@@ -1,3 +1,4 @@
+import { logger } from "../../../logger_config.js"
 import { orderModel } from "../../models/modelsMongodb.js"
 import { Order } from '../../models/orderDTO.js'
 
@@ -26,7 +27,7 @@ export class mongoOrderContainer {
             return (content);
         }
         catch (err) {
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -40,13 +41,13 @@ export class mongoOrderContainer {
                 lastId = content[content.length - 1].id + 1;
             }
             let order = new Order(user, products);
-            order.id=lastId;
+            order.id = lastId;
             //agrego el producto al array y lo escribo en el archivo
             const newElement = new this.collection(order);
             await newElement.save();
             return newElement;
         } catch (err) {
-            return { error: "Error al crear la orden", err }
+            logger.log("error", `Error al crear la orden ${err}`);
         }
     }
 
@@ -55,16 +56,16 @@ export class mongoOrderContainer {
             let orderByID = await this.collection.findOne({ id: id });
             return orderByID;
         } catch (err) {
-            return { error: "No se encontró el cart" }
+            logger.log("error", `No se encontró la orden ${err}`);
         }
     }
 
-    async getByUsr(email) {
+    async getByUsr(username) {
         try {
-            let ordersByUsr = await this.collection.find({ usr: { email: email } });
+            let ordersByUsr = await this.collection.find({ usr: username });
             return ordersByUsr;
         } catch (err) {
-            return { error: "No se encontró la order" }
+            logger.log("error", `No se encontró el orden ${err}`);
         }
     }
 
@@ -87,21 +88,31 @@ export class mongoOrderContainer {
                 }
             )
         } catch (err) {
-            return { error: "No se pudo modificar la order" }
+            logger.log("error", `No se pudo modificar la orden ${err}`);
         }
     }
 
+    //Cambio el estado de una orden
     async changeState(id, state) {
         try {
-            await this.collection.updateOne(
-                { id: id },
-                {
-                    $set: { state: state },
+            let order = await this.getByID(id);;
+            if (order) {
+                if (order.state != "confirmada " && order.state != "cancelada") {
+                    await this.collection.updateOne(
+                        { id: id },
+                        {
+                            $set: { state: state },
+                        }
+                    );
+                    return true;
+                } else {
+                    return false;
                 }
-            )
+            } else {
+                return false;
+            }
         } catch (err) {
-            return { error: "No se pudo modificar la order" }
+            logger.log("error", `No se pudo modificar la orden ${err}`);
         }
     }
-
 }

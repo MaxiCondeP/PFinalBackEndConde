@@ -22,13 +22,13 @@ export class memoryCartContainer {
 
 
     ////Agrego producto al array
-    async addCart() {
+    async addCart(username) {
         //Defino el valor del id en base al contenido del array
         let lastId = 1;
         if (this.carts.length > 0) {
             lastId = this.carts[this.carts.length - 1].id + 1;
         }
-        let cart = new Cart();
+        let cart = new Cart(username);
         let newCart = { ...cart, id: lastId };
         //agrego el producto al array 
         this.carts.push(newCart);
@@ -53,7 +53,7 @@ export class memoryCartContainer {
         if (cart) {
             return cart;
         } else {
-            return { error: "No se encontró el carrito" }
+            return null;
         }
     }
 
@@ -62,7 +62,7 @@ export class memoryCartContainer {
         if (cart) {
             return (cart.products);
         } else {
-            return (cart);
+            return null;
         }
     }
 
@@ -115,7 +115,7 @@ export class memoryCartContainer {
             this.updateCart(idCart, cart.products);
             return deletedProd;
         } else {
-            return null
+            return null;
         }
     }
 

@@ -1,8 +1,10 @@
 import os from "os";
 import { __dirname } from "../../server.js";
+import { logger } from "../../logger_config.js"
 
 
 export const getInfo = (req, res) => {
+    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     let args = process.argv;
     let platform = process.platform;
     let version = process.version;
@@ -16,5 +18,6 @@ export const getInfo = (req, res) => {
 
 export const redirectToInfo = (req, res) => {
     //DEVUELVO A LA PAGINA DE INFO
+    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     res.sendFile(__dirname + "/public/info.html");
 }

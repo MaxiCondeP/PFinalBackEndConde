@@ -1,3 +1,4 @@
+import { logger } from "../../../logger_config.js"
 import { config } from '../../../config.js';
 import { Order } from '../../models/orderDTO.js'
 
@@ -8,7 +9,7 @@ export class firebaseOrderContainer {
 
     constructor() {
         this.db = config.firebase.db;
-        this.query = this.db.collection('carts');
+        this.query = this.db.collection('orders');
     }
 
     static getContainer() {
@@ -27,8 +28,7 @@ export class firebaseOrderContainer {
             return (content);
         }
         catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -44,9 +44,10 @@ export class firebaseOrderContainer {
             let order = new Order(user, products);
             let newOrder = { ...order, id: lastId };
             let doc = this.query.doc(`${lastId}`);
-            return await doc.create(newOrder);
+            await doc.create(newOrder);
+            return newOrder;
         } catch (err) {
-            return { error: "Error al crear la orden", err }
+            logger.log("error", `Error al crear la orden ${err}`);
         }
     }
 
@@ -56,17 +57,21 @@ export class firebaseOrderContainer {
             const element = await doc.get();
             return element.data();
         } catch (err) {
-            return { error: "No se encontró el cart" }
+            logger.log("error", `No se encontró la orden`);
         }
     }
 
-    async getByUsr(id) {
+    async getByUsr(username) {
         try {
-            const doc = this.query.doc.usr(`{usr:{id: ${id}}}`);
-            const element = await doc.get();
-            return element.data();
+            const orders = await this.getAll();
+            let result = orders.filter((order) => order.usr === username);
+            if (result.length > 0) {
+                return result;
+            } else {
+                return null;
+            }
         } catch (err) {
-            return { error: "No se encontró la order" }
+            logger.log("error", `No se encontraron ordenes ${err}`);
         }
     }
 
@@ -85,16 +90,27 @@ export class firebaseOrderContainer {
             const doc = this.query.doc(id);
             return await doc.update({ products: prod })
         } catch (err) {
-            return { error: "No se pudo modificar la order" }
+            logger.log("error", `No se pudo modificar la orden ${err}`);
         }
     }
 
+    //Cambio el estado de una orden
     async changeState(id, state) {
         try {
-            const doc = this.query.doc(id);
-            return await doc.update({ state: state })
+            let order = await this.getByID(id);
+            if (order) {
+                if (order.state !== "confirmada" && order.state !== "cancelada") {
+                    const doc = this.query.doc(`${id}`);
+                    await doc.update({ state: state })
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false
+            }
         } catch (err) {
-            return { error: "No se pudo modificar la order" }
+            logger.log("error", `No se pudo modificar la orden ${err}`);
         }
     }
 

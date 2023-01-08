@@ -1,26 +1,58 @@
 [
 	{
-		"timestamp": "1673066613183",
-		"products": [],
-		"state": "generated",
+		"timestamp": "1673147314362",
+		"usr": "admin@123456.com",
+		"products": [
+			{
+				"title": "Teclado",
+				"price": 2500,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 2,
+				"category": "informática",
+				"id": 1,
+				"quantity": 8
+			},
+			{
+				"title": "Monitor",
+				"price": 10000,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 1,
+				"category": "informática",
+				"id": 3,
+				"quantity": 4
+			}
+		],
+		"state": "confirmada",
 		"id": 1
 	},
 	{
-		"timestamp": "1673066671890",
-		"products": [],
-		"state": "generated",
+		"timestamp": "1673147314362",
+		"usr": "admin@123456.com",
+		"products": [
+			{
+				"title": "Teclado",
+				"price": 2500,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 2,
+				"category": "informática",
+				"id": 1,
+				"quantity": 8
+			},
+			{
+				"title": "Monitor",
+				"price": 10000,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 1,
+				"category": "informática",
+				"id": 3,
+				"quantity": 4
+			}
+		],
+		"state": "cancelada",
 		"id": 2
-	},
-	{
-		"timestamp": "1673066771528",
-		"products": [],
-		"state": "generated",
-		"id": 3
-	},
-	{
-		"timestamp": "1673066810196",
-		"products": [],
-		"state": "generated",
-		"id": 4
 	}
 ]

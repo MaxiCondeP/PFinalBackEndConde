@@ -1,4 +1,5 @@
 import { config } from '../../../config.js';
+import { logger } from "../../../logger_config.js"
 
 let instance = null;
 
@@ -20,11 +21,11 @@ export class firebaseMessageContainer {
         try {
             const querySnapshot = await this.query.get();
             let docs = querySnapshot.docs;
-            const content = docs.map((doc) => (doc.data()));
+            const chat = docs.map((doc) => (doc.data()));
             return (content);
         }
         catch (err) {
-            return { error: "Error al leer el historial de mensajes", err }
+            logger.log("error", `Error al leer el historial de mensajes ${err}`);
         }
     }
 
@@ -34,8 +35,7 @@ export class firebaseMessageContainer {
             await doc.create({ author: message.author, text: message.text, date: message.date });
         }
         catch (err) {
-            return { error: "Error al actualizar historial de mensajes", err };
-
+            logger.log("error", `Error al actualizar el historial de mensajes ${err}`);
         }
     }
 
@@ -45,8 +45,7 @@ export class firebaseMessageContainer {
             return messages.filter((c) => c.author.email == email)
         }
         catch (err) {
-            return { error: "Error al actualizar historial de mensajes", err };
-
+            logger.log("error", `Error al leer el historial de mensajes ${err}`);
         }
     }
 }

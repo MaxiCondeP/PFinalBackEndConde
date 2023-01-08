@@ -1,6 +1,7 @@
 export class Cart {
-    constructor() {
+    constructor(username) {
         this.timestamp = Date.now().toString()
+        this.username= username;
         this.products = [];
     }
 }

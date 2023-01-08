@@ -40,8 +40,7 @@ export class memoryUsrContainer {
                 return user;
             }
         } catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -66,7 +65,7 @@ export class memoryUsrContainer {
                 return newUser;
             }
         } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error", `Error al guardar el usuario ${err}`);
         }
     }
 

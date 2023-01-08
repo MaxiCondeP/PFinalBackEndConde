@@ -1,5 +1,6 @@
 import { usrModel } from "../../models/modelsMongodb.js"
 import { isValidPassword, createHash } from "../../utils/utils.js"
+import { logger } from "../../../logger_config.js"
 
 let instance = null;
 
@@ -32,19 +33,16 @@ export class mongoUsrContainer {
                 return user;
             }
         } catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
     async usrById(id) {
         try {
             const user = await this.collection.findById(id);
-
             return user;
         } catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
 
     }
@@ -63,27 +61,15 @@ export class mongoUsrContainer {
                 const phone = user.phone;
                 const avatar = user.avatar
                 let isAdmin = false;
-                if(user.isAdmin) {isAdmin=user.isAdmin}
+                if (user.isAdmin) { isAdmin = user.isAdmin }
                 const newUser = new this.collection({ name, username, password, age, phone, avatar, isAdmin })
                 await newUser.save();
                 return newUser;
             }
         } catch (err) {
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al guardar el usuario ${err}`);
         }
     }
 
-
-    async userToAdmin(username) {
-        try {
-            const usr = await this.collection.findOne({ username });
-            if (usr) {
-                usr.isAdmin = true;
-                await this.collection.findOneAndUpdate({ username: usr.username }, usr);
-            }
-        } catch (err) {
-            return { error: "Error al modificar dato de la base", err }
-        }
-    }
 
 }

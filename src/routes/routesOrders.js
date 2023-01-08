@@ -10,8 +10,8 @@ import {
 
 export const routerOrder = Router();
 
-routerOrder.get('/:email', authJWT, getUsrOrders);
+routerOrder.get('/user/:email', authJWT, getUsrOrders);
 routerOrder.get('/:id', authJWT, getOrder);
-routerOrder.put('/:id/confirm', authJWT, isAdmin, confirmOrder);
-routerOrder.put('/:id/cancel', authJWT, isAdmin, cancelOrder);
+routerOrder.post('/:id/confirm', authJWT, isAdmin, confirmOrder);
+routerOrder.post('/:id/cancel', authJWT, isAdmin, cancelOrder);
 

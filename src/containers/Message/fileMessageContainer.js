@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { logger } from "../../../logger_config.js"
 
 let instance = null;
 
@@ -24,7 +25,7 @@ export class fileMessageContainer {
             return chat;
         }
         catch (err) {
-            return { error: "Error al leer el historial de mensajes", err }
+            logger.log("error", `Error al leer el historial de mensajes ${err}`);
         }
     }
 
@@ -35,10 +36,9 @@ export class fileMessageContainer {
             messages.push(message);
             const newFile = JSON.stringify(messages, null, "\t");
             await fs.promises.writeFile(this.rutaDeArchivo, newFile);
-
         }
         catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -48,8 +48,7 @@ export class fileMessageContainer {
             return messages.filter((c) => c.author.email == email)
         }
         catch (err) {
-            return { error: "Error al actualizar historial de mensajes", err };
-
+            logger.log("error", `Error al leer el historial de mensajes ${err}`);
         }
     }
 }

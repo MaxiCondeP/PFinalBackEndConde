@@ -10,7 +10,6 @@ export const userSignup = (req, res) => {
     req.session.user = req.body;
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     res.status(200).send("SIGNED UP!")
-    //res.redirect("/login");
 }
 
 export const userLogin = async (req, res) => {
@@ -23,22 +22,13 @@ export const userLogin = async (req, res) => {
 }
 
 
-export const checkLogin = (req, res) => {
-    //Si esta autenticado va a directo a dashboard
-    if (!req.session.user) {
-        res.sendFile(__dirname + "/public/login.html");
-    } else {
-        logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    }
-}
-
 export const userLogout = (req, res) => {
+    logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     req.session.destroy(err => {
         if (err) {
             logger.log("error", `Error al cerrar sesion: ${err}`);
         }
         logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-        res.redirect("/login")
     });
 }
 

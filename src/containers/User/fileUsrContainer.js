@@ -33,7 +33,7 @@ export class fileUsrContainer {
             await fs.promises.writeFile(this.fileRoute, fileContent);
             //muestro el archivo escrito
         } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -52,8 +52,7 @@ export class fileUsrContainer {
             }
 
         } catch (err) {
-            //console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al leer el archivo ${err}`);
         }
     }
 
@@ -81,7 +80,7 @@ export class fileUsrContainer {
                 return (newUser)
             }
         } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -92,7 +91,7 @@ export class fileUsrContainer {
             return JSON.parse(content);
         }
         catch (err) {
-            return { error: "Error al leer el archivo", err }
+            logger.log("error", `Error al leer el archivo ${err}`);
         }
     }
 
@@ -118,7 +117,7 @@ export class fileUsrContainer {
         if (usr) {
             return usr;
         } else {
-            return { error: "No se encontró el user" }
+            return null;
         }
     }
 

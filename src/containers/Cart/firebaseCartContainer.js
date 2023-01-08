@@ -1,8 +1,10 @@
+import { logger } from "../../../logger_config.js"
 import { config } from '../../../config.js';
-import {Cart} from '../../models/cartDTO.js'
+import { Cart } from '../../models/cartDTO.js'
 
 
-let instance=null;
+
+let instance = null;
 
 
 
@@ -14,12 +16,12 @@ export class firebaseCartContainer {
     }
 
 
-    static getContainer(){
-        if(!instance){
-            instance=new firebaseCartContainer();
+    static getContainer() {
+        if (!instance) {
+            instance = new firebaseCartContainer();
         }
         return instance;
-    } 
+    }
 
     ///Traigo el archivo y devuelvo el array.
     async getAll() {
@@ -30,14 +32,13 @@ export class firebaseCartContainer {
             return (content);
         }
         catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
 
     ////Agrego producto al array
-    async addCart() {
+    async addCart(username) {
         try {
             const content = await this.getAll();
             //Defino el valor del id en base al contenido del archivo
@@ -45,14 +46,14 @@ export class firebaseCartContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let cart = new Cart();
+            let cart = new Cart(username);
             let newCart = { ...cart, id: lastId };
             //agrego el producto a la db, y devuelvo el resultado
             let doc = this.query.doc(`${lastId}`);
-            return await doc.create(newCart);
+            await doc.create(newCart);
+            return lastId;
         } catch (err) {
-            console.log("Error al crear el cart", err)
-            return { error: "Error al crear el cart", err }
+            logger.log("error", `Error al crear el cart ${err}`);
         }
     }
 
@@ -66,8 +67,7 @@ export class firebaseCartContainer {
                 await this.query.doc(`${id}`).delete();
             }
         } catch (err) {
-            console.log("Error eliminar el cart de la bd", err)
-            return { error: "Error eliminar el cart de la bd", err }
+            logger.log("error", `Error al eliminar el cart de la bd ${err}`);
         }
     }
 
@@ -77,16 +77,18 @@ export class firebaseCartContainer {
             const doc = this.query.doc(`${id}`);
             const element = await doc.get();
             return element.data();
-
         } catch (err) {
-            console.log("No se encontró el cart", err)
-            return { error: "No se encontró el cart" }
+            logger.log("error", `Error al buscar en la bd ${err}`);
         }
     }
 
     async getProducts(id) {
         let cart = await this.getByID(id);
-        return (cart.products);
+        if (cart) {
+            return (cart.products);
+        } else {
+            return null;
+        }
     }
 
 
@@ -95,38 +97,39 @@ export class firebaseCartContainer {
         try {
             let cart = await this.getByID(idCart);
             let index = await cart.products.findIndex(p => p.id == prod.id);
-           
             if (index == -1) {
                 let newProd = { ...prod, quantity: qua }
-                newProd.stock = newProd.stock - qua;
-                cart.products.push(newProd);
+                newProd.stock = newProd.stock - qua; +
+                    cart.products.push(newProd);
             } else {
                 cart.products[index].stock = cart.products[index].stock - qua;
                 cart.products[index].quantity = cart.products[index].quantity + qua;
             }
             const doc = this.query.doc(idCart);
-            return await doc.update({ products: cart.products })
+            await doc.update({ products: cart.products })
+            return cart.products
         } catch (err) {
-            console.log("Error , no se pudo agregar el producto", err)
-            return { error: "Error , no se pudo agregar el producto", err }
+            logger.log("error", `Error , no se pudo agregar el producto ${err}`);
         }
     }
 
 
     //Elimino prod de carrito 
     async removeFromCart(idCart, idProd) {
-            try {
-                let cart = await this.getByID(idCart);
-                const index = cart.products.findIndex(p => p.id == idProd);
-                if (index != -1) {
-                    cart.products.splice(index, 1)
-                    const doc = await this.query.doc(`${idCart}`);
-                    return await doc.update({ products: `${cart.products}` })
-                }
-            } catch (err) {
-                console.log("Error , no se encontró el producto a eliminar", err)
-                return { error: "Error , no se encontró el producto a eliminar", err }
+        try {
+            let cart = await this.getByID(idCart);
+            let prod = null;
+            const index = cart.products.findIndex(p => p.id == idProd);
+            if (index != -1) {
+                prod = cart.products[index];
+                cart.products.splice(index, 1)
+                const doc = await this.query.doc(`${idCart}`);
+                await doc.update({ products: cart.products })
+                return prod;
             }
+        } catch (err) {
+            logger.log("error", `Error , no se encontró el producto a eliminar ${err}`);
         }
-
     }
+
+}

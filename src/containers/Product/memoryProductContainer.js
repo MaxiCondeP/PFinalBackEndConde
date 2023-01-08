@@ -1,3 +1,4 @@
+
 let instance = null
 
 
@@ -51,6 +52,17 @@ export class ProdContainer {
         }
     }
 
+    async getByCategory(category) {
+        //traigo el array y lo filtro por ID
+        let content = this.getAll();
+        const prod = content.filter(prod => prod.category == category);
+        if (prod.length>0) {
+            return prod;
+        } else {
+            return null;
+        }
+    }
+
     editByID(id, newProd) {
         let prod = this.getByID(id);
         if (prod) {
@@ -71,8 +83,6 @@ export class ProdContainer {
         if (index != -1) {
             content.splice(index, 1);
             this.products = content;
-        } else {
-            return { error: "No se encontró el producto" }
         }
     }
 
@@ -82,7 +92,7 @@ export class ProdContainer {
         this.products = [];
     }
 
-
+    ////verifico si es posible la compra en cuanto a stock
     stockState(idProd, quantity) {
         let prod = this.getByID(idProd);
         let stock = prod.stock - quantity;
@@ -93,6 +103,7 @@ export class ProdContainer {
         }
     }
 
+    ////actualizo stock
     stockUpdate(idProd, quantity) {
         let prod = this.getByID(idProd);
         let stock = prod.stock - quantity;

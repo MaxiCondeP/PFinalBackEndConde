@@ -1,3 +1,4 @@
+import { logger } from "../../../logger_config.js"
 import { cartModel } from "../../models/modelsMongodb.js"
 import { Cart } from '../../models/cartDTO.js'
 
@@ -29,14 +30,13 @@ export class mongoCartContainer {
             return (content);
         }
         catch (err) {
-            console.log("Error al traer datos de la base", err)
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
 
     ////Agrego producto al array
-    async addCart() {
+    async addCart(username) {
         try {
             const content = await this.getAll();
             //Defino el valor del id en base al contenido del archivo
@@ -44,14 +44,14 @@ export class mongoCartContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let cart = new Cart();
+            let cart = new Cart(username);
             let newCart = { ...cart, id: lastId };
             //agrego el producto a la db, y devuelvo el resultado
             const newElement = new this.collection(newCart);
             await newElement.save();
             return lastId;
         } catch (err) {
-            return { error: "Error al crear el cart", err }
+            logger.log("error", `Error al crear el cart ${err}`);
         }
     }
 
@@ -65,9 +65,10 @@ export class mongoCartContainer {
                 await this.collection.deleteOne({ id: id });
             }
         } catch (err) {
-            return { error: "Error eliminar el cart de la bd", err }
+            logger.log("error", `Error al eliminar el cart de la bd ${err}`);
         }
     }
+
 
 
     async getByID(id) {
@@ -75,7 +76,7 @@ export class mongoCartContainer {
         if (cart) {
             return cart;
         } else {
-            return { error: "No se encontró el carrito" }
+            return null;
         }
     }
 
@@ -95,8 +96,8 @@ export class mongoCartContainer {
         let cart = await this.getByID(idCart);
         let index = await cart.products.findIndex(p => p.id == prod.id);
         if (index == -1) {
-            let newProd =prod
-            newProd.quantity= qua;
+            let newProd = prod
+            newProd.quantity = qua;
             newProd.stock = newProd.stock - qua;
             cart.products.push(newProd);
         } else {
@@ -111,7 +112,7 @@ export class mongoCartContainer {
         )
         return cart.products
     } catch(err) {
-        return { error: "Error , no se pudo agregar el producto", err }
+        logger.log("error", `Error , no se pudo agregar el producto ${err}`);
     }
 
 
@@ -122,7 +123,7 @@ export class mongoCartContainer {
             let result = null;
             const index = cart.products.findIndex(p => p.id == idProd);
             if (index != -1) {
-                result =cart.products[index];
+                result = cart.products[index];
                 cart.products.splice(index, 1)
                 await this.collection.updateOne(
                     { id: idCart },
@@ -131,11 +132,9 @@ export class mongoCartContainer {
                     }
                 )
             }
-            console.log(result)
             return result;
         } catch (err) {
-            console.log("Error , no se encontró el producto a eliminar", err)
-            return { error: "Error , no se encontró el producto a eliminar", err }
+            logger.log("error", `Error , no se encontró el producto a eliminar ${err}`);
         }
     }
 

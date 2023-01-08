@@ -9,6 +9,7 @@ try {
 
 const schemaCart = new mongoose.Schema({
     id: { type: Number, required: true },
+    username: { type: String, required: true },
     timestamp: { type: Number, required: true },
     products: { type: Array, required: true },
 });

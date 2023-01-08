@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { Cart } from '../../models/cartDTO.js'
+import { logger } from "../../../logger_config.js"
 
 let instance = null;
 
@@ -28,7 +29,7 @@ export class CartContainer {
             //muestro el archivo escrito
             console.log(content);
         } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error",`Error al escribir el archivo ${err}`);
         }
     }
 
@@ -39,13 +40,13 @@ export class CartContainer {
             return JSON.parse(content);
         }
         catch (err) {
-            return { error: "Error al leer el archivo", err }
+            logger.log("error",`Error al leer el archivo ${err}`);
         }
     }
 
 
     ////Agrego producto al array
-    async addCart() {
+    async addCart(username) {
         try {
             const content = await this.getAll();
             //Defino el valor del id en base al contenido del archivo
@@ -53,7 +54,7 @@ export class CartContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let cart = new Cart();
+            let cart = new Cart(username);
             let newCart = { ...cart, id: lastId };
             console.log(content)
             //agrego el producto al array y lo escribo en el archivo
@@ -61,7 +62,7 @@ export class CartContainer {
             await this.write(content);
             return lastId;
         } catch (err) {
-            return { error: "Error al modificar el archivo", err }
+            logger.log("error",`Error al modificar el archivo el archivo ${err}`);
         }
     }
 
@@ -75,7 +76,7 @@ export class CartContainer {
                 await this.write(content);
             }
         } catch (err) {
-            return { error: "Error al modificar el archivo", err }
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -87,7 +88,7 @@ export class CartContainer {
         if (cart) {
             return cart;
         } else {
-            return { error: "No se encontró el carrito" }
+            return null;
         }
     }
 
@@ -113,17 +114,6 @@ export class CartContainer {
         }
     }
 
-    async isInCart(idProd, idCart) {
-        let cart = this.getByID(idCart);
-
-        if (prod) {
-            return true
-        } else {
-            return false;
-        }
-    }
-
-
     ////Agrego prod al carrito
     async AddToCart(idCart, prod, qua) {
         try {
@@ -138,8 +128,9 @@ export class CartContainer {
                 cart.products[index].quantity = cart.products[index].quantity + qua;
             }
             await this.updateCart(idCart, cart.products);
+            return cart.products
         } catch (err) {
-            return { error: "Error , no se pudo agregar el producto", err }
+            logger.log("error", `Error , no se pudo agregar el producto ${err}`);
         }
 
     }

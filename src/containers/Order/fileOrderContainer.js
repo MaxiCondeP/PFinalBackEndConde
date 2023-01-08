@@ -1,3 +1,4 @@
+import { logger } from "../../../logger_config.js"
 import * as fs from 'fs';
 import { Order } from '../../models/orderDTO.js'
 
@@ -24,7 +25,7 @@ export class OrderContainer {
             const fileContent = JSON.stringify(content, null, "\t");
             await fs.promises.writeFile(this.fileRoute, fileContent);
         } catch (err) {
-            return { error: "Error al escribir el archivo", err }
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -35,7 +36,7 @@ export class OrderContainer {
             return JSON.parse(content);
         }
         catch (err) {
-            return { error: "Error al leer el archivo", err }
+            logger.log("error", `Error al leer el archivo ${err}`);
         }
     }
 
@@ -55,7 +56,7 @@ export class OrderContainer {
             await this.write(content);
             return newOrder;
         } catch (err) {
-            return { error: "Error al crear la orden", err }
+            logger.log("error", `Error al crear la orden ${err}`);
         }
     }
 
@@ -67,19 +68,19 @@ export class OrderContainer {
         if (order) {
             return order;
         } else {
-            return { error: "No se encontró la orden" }
+            return null;
         }
     }
 
 
-    async getByUsr(id) {
+    async getByUsr(username) {
         //traigo el array y lo filtro por ID
         let content = await this.getAll();
-        const orders = content.filter(c => c.usr.id == id);
+        const orders = content.filter(c => c.usr == username);
         if (orders) {
             return orders;
         } else {
-            return { error: "No se encontró la orden" }
+            return null;
         }
     }
 
@@ -104,14 +105,22 @@ export class OrderContainer {
         }
     }
 
+    //Cambio el estado de una orden
     async changeState(id, state) {
         let order = await this.getByID(id);
         let content = await this.getAll();
         const index = content.findIndex(c => c.id == id);
         if (order) {
-            order.state = state;
-            content[index] = order;
-            await this.write(content);
+            if (order.state != "confirmada " && order.state != "cancelada") {
+                order.state = state;
+                content[index] = order;
+                await this.write(content);
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 

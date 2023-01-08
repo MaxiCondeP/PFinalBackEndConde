@@ -64,14 +64,9 @@ app.use(session({
 }));
 
 
-
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 await localPassport(passport);
-
-
 
 app.use('/products', routerProd);
 app.use('/cart', routerCart);
@@ -80,10 +75,8 @@ app.use('/chat', routerMessage);
 app.use('/', routerIndex);
 app.use('/', routerInfo);
 
-
 const srv = httpServer;
 const PORT = config.PORT;
-
 
 
 if (args.MODE === 'CLUSTER') {

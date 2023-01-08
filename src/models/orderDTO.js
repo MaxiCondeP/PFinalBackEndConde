@@ -3,6 +3,6 @@ export class Order {
         this.timestamp = Date.now().toString();
         this.usr=usr.username;
         this.products = products;
-        this.state = "generated"
+        this.state = "generada"
     }
 }

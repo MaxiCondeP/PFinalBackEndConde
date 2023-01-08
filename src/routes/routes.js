@@ -6,7 +6,6 @@ import { getInfo, redirectToInfo } from '../controllers/extraApisController.js'
 import {
   userSignup,
   userLogin,
-  checkLogin,
   userLogout,
   loginFail,
   signupFail,
@@ -16,7 +15,7 @@ import {
 export const routerIndex = Router();
 export const routerInfo = Router();
 
-routerIndex.get('/', checkLogin);
+
 routerIndex.post("/signup",
   passport.authenticate("signup", { failureRedirect: "/failSignup", session: false }), userSignup);
 

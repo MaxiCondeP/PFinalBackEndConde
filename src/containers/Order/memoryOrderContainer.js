@@ -23,21 +23,17 @@ export class memoryOrderContainer {
 
     ////Agrego producto al array
     addOrder(user, products) {
-        try {
-            const content = this.getAll();
-            //Defino el valor del id en base al contenido del archivo
-            let lastId = 1;
-            if (content.length > 0) {
-                lastId = content[content.length - 1].id + 1;
-            }
-            let order = new Order(user, products);
-            let newOrder = { ...order, id: lastId };
-            //agrego el producto al array y lo escribo en el archivo
-            this.orders.push(newOrder);
-            return lastId;
-        } catch (err) {
-            return { error: "Error al agregar la orden", err }
+        const content = this.getAll();
+        //Defino el valor del id en base al contenido del archivo
+        let lastId = 1;
+        if (content.length > 0) {
+            lastId = content[content.length - 1].id + 1;
         }
+        let order = new Order(user, products);
+        let newOrder = { ...order, id: lastId };
+        //agrego el producto al array y lo escribo en el archivo
+        this.orders.push(newOrder);
+        return lastId;
     }
 
 
@@ -60,7 +56,7 @@ export class memoryOrderContainer {
         if (orders) {
             return orders;
         } else {
-            return { error: "No se encontró la orden" }
+            return null;
         }
     }
 
@@ -83,14 +79,21 @@ export class memoryOrderContainer {
         }
     }
 
+    //Cambio el estado de una orden
     changeState(id, state) {
         let order = this.getByID(id);
         const index = this.orders.findIndex(c => c.id == id);
         if (order) {
-            order.state = state;
-            this.orders[index] = order;
+            if (order.state != "confirmada " && order.state != "cancelada") {
+                order.state = state;
+                this.orders[index] = order;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false
         }
     }
-
 }
 

@@ -1,5 +1,5 @@
 import { msgModel } from '../../models/modelsMongodb.js';
-
+import { logger } from "../../../logger_config.js"
 
 let instance = null;
 
@@ -25,7 +25,7 @@ export class mongoMessageContainer {
             return (content);
         }
         catch (err) {
-            return { error: "Error al leer historial de mensajes", err };
+            logger.log("error", `Error al leer el historial de mensajes ${err}`);
         }
     }
 
@@ -35,10 +35,9 @@ export class mongoMessageContainer {
         try {
             const newElement = new this.collection(message);
             await newElement.save();
-            //{author: message.author,text: message.text,date: message.date};
         }
         catch (err) {
-            return { error: "Error al actualizar historial de mensajes", err };
+            logger.log("error", `Error al actualizar el historial de mensajes ${err}`);
 
         }
 
@@ -50,8 +49,7 @@ export class mongoMessageContainer {
             return messages.filter((c) => c.author.email == email)
         }
         catch (err) {
-            return { error: "Error al actualizar historial de mensajes", err };
-
+            logger.log("error", `Error al leer el historial de mensajes ${err}`);
         }
     }
 

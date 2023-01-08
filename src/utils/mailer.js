@@ -66,7 +66,7 @@ export const getOrderMailToUsr = async (usr, order) => {
     let html=getProductsHTML(order.products);
     const mailOptions = {
         from: 'eccommerce API',
-        to: usr.email,
+        to: usr,
         subject: mailSubject ,
         html: html
     }

@@ -1,4 +1,4 @@
-
+import { logger } from "../../../logger_config.js"
 import { config } from '../../../config.js';
 
 let instance = null
@@ -26,7 +26,7 @@ export class firebaseProductContainer {
             return (content);
         }
         catch (err) {
-            return { error: "Error al traer datos de la base", err }
+            logger.log("error", `Error al traer datos de la base ${err}`);
         }
     }
 
@@ -48,7 +48,7 @@ export class firebaseProductContainer {
             if (lastId == -1) { lastId = null }
             return lastId;
         } catch (err) {
-            return { error: "Error al modificar el archivo", err }
+            logger.log("error", `Error al guardar el producto ${err}`);
         }
     }
 
@@ -64,7 +64,18 @@ export class firebaseProductContainer {
                 return null;
             }
         } catch (err) {
-            return { error: "No se encontró el product" , err}
+            logger.log("error", `No se encontró el el producto ${err}`);
+        }
+    }
+
+    async getByCategory(category) {
+        //traigo el array y lo filtro por ID
+        let content = await this.getAll();
+        const prod = content.filter(prod => prod.category == category);
+        if (prod.length>0) {
+            return prod;
+        } else {
+            return null;
         }
     }
 
@@ -74,10 +85,10 @@ export class firebaseProductContainer {
             if (prod) {
                 let updated = { ...newProd, id: id }
                 const doc = this.query.doc(`${id}`);
-                console.log(await doc.update(updated))
+                await doc.update(updated);
             }
         } catch (err) {
-            return { error: "No se encontró el product", err }
+            logger.log("error", `No se pudo modificar el el producto ${err}`);
         }
 
     }
@@ -93,7 +104,7 @@ export class firebaseProductContainer {
                 await this.query.doc(`${id}`).delete();
             }
         } catch {
-            return { error: "No se pudo eliminar el product" }
+            logger.log("error", `No se pudo eliminar el producto ${err}`);
         }
     }
 
@@ -101,31 +112,27 @@ export class firebaseProductContainer {
     async deleteAll() {
         try {
             const snapshot = await this.query.get();
-
             const batchSize = snapshot.size;
             if (batchSize === 0) {
                 // Valida que no queden documentos
                 resolve();
                 return;
             }
-
             //Elimina documentos
             const batch = db.batch();
             snapshot.docs.forEach((doc) => {
                 batch.delete(doc.ref);
             });
             await batch.commit();
-
-
             process.nextTick(() => {
                 deleteQueryBatch(db, query, resolve);
             });
         } catch (err) {
-            return { error: "Error al eliminar los productos", err }
+            logger.log("error", `Error al eliminar los productos ${err}`);
         }
     }
 
-
+    ////verifico si es posible la compra en cuanto a stock
     async stockState(idProd, quantity) {
         let prod = await this.getByID(idProd);
         let stock = prod.stock - quantity;
@@ -136,6 +143,7 @@ export class firebaseProductContainer {
         }
     }
 
+    ////actualizo stock
     async stockUpdate(idProd, quantity) {
         let prod = await this.getByID(idProd);
         let stock = prod.stock - quantity;
