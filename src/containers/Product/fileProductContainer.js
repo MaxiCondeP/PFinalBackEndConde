@@ -132,7 +132,6 @@ export class ProdContainer {
 
     async stockState(idProd, quantity) {
         let prod = await this.getByID(idProd);
-        console.log(prod)
         let stock = prod.stock - quantity;
         if (stock >= 0) {
             return true;

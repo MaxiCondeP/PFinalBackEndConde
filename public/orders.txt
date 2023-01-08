@@ -24,7 +24,7 @@
 				"quantity": 4
 			}
 		],
-		"state": "confirmada",
+		"state": "cancelada",
 		"id": 1
 	},
 	{

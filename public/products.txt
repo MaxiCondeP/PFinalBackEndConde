@@ -4,7 +4,7 @@
 		"price": 2500,
 		"thumbnail": "loremipsum.com",
 		"timestamp": 1660824480684,
-		"stock": 2,
+		"stock": 16,
 		"category": "informática",
 		"id": 1
 	},
@@ -22,7 +22,7 @@
 		"price": 10000,
 		"thumbnail": "loremipsum.com",
 		"timestamp": 1660824480684,
-		"stock": 1,
+		"stock": 8,
 		"category": "informática",
 		"id": 3
 	}

@@ -1,4 +1,4 @@
-import { daoOrders } from '../../server.js'
+import { daoOrders, daoProducts } from '../../server.js'
 import { getOrderMailToUsr } from '../utils/mailer.js';
 import { logger } from "../../logger_config.js"
 
@@ -38,7 +38,7 @@ export const confirmOrder = async (req, res) => {
     if (result) {
         //si esta ok traigo datos de la orden para enviar mail de confirmación
         const order = await daoOrders.getByID(id);
-        await getOrderMailToUsr(user, order);
+        await getOrderMailToUsr(order);
         res.status(200).send(`Orden confirmada`);
     } else {
         res.status(200).send(`Orden inexistente o en estado no modificable.`);
@@ -50,12 +50,19 @@ export const confirmOrder = async (req, res) => {
 export const cancelOrder = async (req, res) => {
     let id = req.params.id;
     let user = req.session.user;
-    const result = await daoOrders.changeState(id, "cancelada");   
+    const result = await daoOrders.changeState(id, "cancelada");
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     if (result) {
-          //si esta ok traigo datos de la orden para enviar mail de confirmación
+        //si esta ok traigo datos de la orden 
         const order = await daoOrders.getByID(id);
-        await getOrderMailToUsr(user, order);
+        const products= order.products;
+        let quantity=0;
+        //recorro prods para devolver a stock 
+        for(let i=0; i<products.length ;i++){
+            quantity = -products[i].quantity;
+            await daoProducts.stockUpdate(products[i].id, quantity);
+        }
+        await getOrderMailToUsr(order);
         res.status(200).send(`Orden cancelada`);
     } else {
         res.status(200).send(`Orden inexistente o en estado no modificable.`);

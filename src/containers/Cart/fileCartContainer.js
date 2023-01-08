@@ -26,8 +26,6 @@ export class CartContainer {
             //Parseo a JSON
             const fileContent = JSON.stringify(content, null, "\t");
             await fs.promises.writeFile(this.fileRoute, fileContent);
-            //muestro el archivo escrito
-            console.log(content);
         } catch (err) {
             logger.log("error",`Error al escribir el archivo ${err}`);
         }
