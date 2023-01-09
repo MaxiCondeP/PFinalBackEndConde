@@ -94,23 +94,27 @@ export class mongoCartContainer {
     async AddToCart(idCart, prod, qua) {
 
         let cart = await this.getByID(idCart);
-        let index = await cart.products.findIndex(p => p.id == prod.id);
-        if (index == -1) {
-            let newProd = prod
-            newProd.quantity = qua;
-            newProd.stock = newProd.stock - qua;
-            cart.products.push(newProd);
-        } else {
-            cart.products[index].stock = cart.products[index].stock - qua;
-            cart.products[index].quantity = cart.products[index].quantity + qua;
-        }
-        await this.collection.updateOne(
-            { id: idCart },
-            {
-                $set: { products: cart.products },
+        if (cart) {
+            let index = await cart.products.findIndex(p => p.id == prod.id);
+            if (index == -1) {
+                let newProd = prod
+                newProd.quantity = qua;
+                newProd.stock = newProd.stock - qua;
+                cart.products.push(newProd);
+            } else {
+                cart.products[index].stock = cart.products[index].stock - qua;
+                cart.products[index].quantity = cart.products[index].quantity + qua;
             }
-        )
-        return cart.products
+            await this.collection.updateOne(
+                { id: idCart },
+                {
+                    $set: { products: cart.products },
+                }
+            )
+            return cart.products
+        } else {
+            return null
+        }
     } catch(err) {
         logger.log("error", `Error , no se pudo agregar el producto ${err}`);
     }

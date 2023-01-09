@@ -92,16 +92,21 @@ export class memoryCartContainer {
     ////Agrego prod al carrito
     AddToCart(idCart, prod, qua) {
         let cart = this.getByID(idCart);
-        let index = cart.products.findIndex(p => p.id == prod.id);
-        if (index == -1) {
-            let newProd = { ...prod, quantity: qua }
-            newProd.stock = newProd.stock - qua;
-            cart.products.push(newProd);
+        if (cart) {
+            let index = cart.products.findIndex(p => p.id == prod.id);
+            if (index == -1) {
+                let newProd = { ...prod, quantity: qua }
+                newProd.stock = newProd.stock - qua;
+                cart.products.push(newProd);
+            } else {
+                cart.products[index].stock = cart.products[index].stock - qua;
+                cart.products[index].quantity = cart.products[index].quantity + qua;
+            }
+            this.updateCart(idCart, cart.products);
+            return cart.products;
         } else {
-            cart.products[index].stock = cart.products[index].stock - qua;
-            cart.products[index].quantity = cart.products[index].quantity + qua;
+            return null
         }
-        this.updateCart(idCart, cart.products);
     }
 
 

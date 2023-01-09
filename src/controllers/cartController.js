@@ -66,7 +66,7 @@ export const addProductToCart = async (req, res) => {
         //chequeo stock
         if (await daoProducts.stockState(idProd, quantity)) {
             const result = await daoCarts.AddToCart(idCart, prod, quantity);
-            if (!result.error) {
+            if (result) {
                 //si esta ok actualizo stock en producto
                 await daoProducts.stockUpdate(idProd, quantity)
                 res.status(200).send(`Producto agregado al carrito.`);

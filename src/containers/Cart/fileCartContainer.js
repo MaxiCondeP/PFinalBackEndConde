@@ -116,17 +116,21 @@ export class CartContainer {
     async AddToCart(idCart, prod, qua) {
         try {
             let cart = await this.getByID(idCart);
-            let index = cart.products.findIndex(p => p.id == prod.id);
-            if (index == -1) {
-                let newProd = { ...prod, quantity: qua }
-                newProd.stock = newProd.stock - qua;
-                cart.products.push(newProd);
+            if (cart) {
+                let index = cart.products.findIndex(p => p.id == prod.id);
+                if (index == -1) {
+                    let newProd = { ...prod, quantity: qua }
+                    newProd.stock = newProd.stock - qua;
+                    cart.products.push(newProd);
+                } else {
+                    cart.products[index].stock = cart.products[index].stock - qua;
+                    cart.products[index].quantity = cart.products[index].quantity + qua;
+                }
+                await this.updateCart(idCart, cart.products);
+                return cart.products
             } else {
-                cart.products[index].stock = cart.products[index].stock - qua;
-                cart.products[index].quantity = cart.products[index].quantity + qua;
+                return null
             }
-            await this.updateCart(idCart, cart.products);
-            return cart.products
         } catch (err) {
             logger.log("error", `Error , no se pudo agregar el producto ${err}`);
         }
