@@ -77,10 +77,11 @@ export class firebaseUsrContainer {
                 const password = hashedPassword;
                 const age = user.age
                 const phone = user.phone;
-                const avatar = user.avatar
+                const avatar = user.avatar;
+                const address = user.address;
                 let isAdmin = false;
                 if (user.isAdmin) { isAdmin = user.isAdmin }
-                const newUser = { name, username, password, age, phone, avatar, isAdmin }
+                const newUser = { name, username, password, age, phone, avatar, address, isAdmin }
                 const doc = this.query.doc();
                 await doc.create(newUser);
                 return newUser;

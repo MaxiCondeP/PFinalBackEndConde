@@ -70,9 +70,10 @@ export class fileUsrContainer {
                 const age = user.age
                 const phone = user.phone;
                 const avatar = user.avatar
+                const address = user.address;
                 let isAdmin = false;
                 if (user.isAdmin) { isAdmin = user.isAdmin }
-                const newUser = new User(name, username, password, age, phone, avatar, isAdmin)
+                const newUser = new User(name, username, password, age, phone, avatar, address, isAdmin)
                 //Parseo a JSON
                 let content = await this.getAll();
                 content.push(newUser);

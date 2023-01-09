@@ -36,7 +36,7 @@ export class mongoCartContainer {
 
 
     ////Agrego producto al array
-    async addCart(username) {
+    async addCart(username, address) {
         try {
             const content = await this.getAll();
             //Defino el valor del id en base al contenido del archivo
@@ -44,7 +44,7 @@ export class mongoCartContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let cart = new Cart(username);
+            let cart = new Cart(username, address);
             let newCart = { ...cart, id: lastId };
             //agrego el producto a la db, y devuelvo el resultado
             const newElement = new this.collection(newCart);

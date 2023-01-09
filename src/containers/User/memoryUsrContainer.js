@@ -59,8 +59,9 @@ export class memoryUsrContainer {
                 const phone = user.phone;
                 const avatar = user.avatar
                 let isAdmin = false;
+                const address = user.address;
                 if (user.isAdmin) { isAdmin = user.isAdmin }
-                const newUser = new User(name, username, password, age, phone, avatar, isAdmin)
+                const newUser = new User(name, username, password, age, phone, avatar, address, isAdmin)
                 this.users.push(newUser);
                 return newUser;
             }

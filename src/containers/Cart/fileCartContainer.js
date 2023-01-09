@@ -27,7 +27,7 @@ export class CartContainer {
             const fileContent = JSON.stringify(content, null, "\t");
             await fs.promises.writeFile(this.fileRoute, fileContent);
         } catch (err) {
-            logger.log("error",`Error al escribir el archivo ${err}`);
+            logger.log("error", `Error al escribir el archivo ${err}`);
         }
     }
 
@@ -38,13 +38,13 @@ export class CartContainer {
             return JSON.parse(content);
         }
         catch (err) {
-            logger.log("error",`Error al leer el archivo ${err}`);
+            logger.log("error", `Error al leer el archivo ${err}`);
         }
     }
 
 
     ////Agrego producto al array
-    async addCart(username) {
+    async addCart(username, address) {
         try {
             const content = await this.getAll();
             //Defino el valor del id en base al contenido del archivo
@@ -52,7 +52,7 @@ export class CartContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let cart = new Cart(username);
+            let cart = new Cart(username, address);
             let newCart = { ...cart, id: lastId };
             console.log(content)
             //agrego el producto al array y lo escribo en el archivo
@@ -60,7 +60,7 @@ export class CartContainer {
             await this.write(content);
             return lastId;
         } catch (err) {
-            logger.log("error",`Error al modificar el archivo el archivo ${err}`);
+            logger.log("error", `Error al modificar el archivo el archivo ${err}`);
         }
     }
 

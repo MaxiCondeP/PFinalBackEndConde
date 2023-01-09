@@ -13,7 +13,7 @@ export const routerCart = Router();
 
 routerCart.post('/', authJWT, newCart);
 routerCart.delete('/:id', authJWT, deleteCart);
-routerCart.get('/:id/products', authJWT, getProductsOnCart);
-routerCart.post('/:id/products', authJWT, addProductToCart);
-routerCart.post('/:id/order', authJWT, generateOrder);
-routerCart.delete('/:id/products/:id_prod', authJWT, deleteProductFromCart);
+routerCart.get('/:id/productos', authJWT, getProductsOnCart);
+routerCart.post('/:id/productos', authJWT, addProductToCart);
+routerCart.post('/:id/orden', authJWT, generateOrder);
+routerCart.delete('/:id/productos/:id_prod', authJWT, deleteProductFromCart);

@@ -38,7 +38,7 @@ export class firebaseCartContainer {
 
 
     ////Agrego producto al array
-    async addCart(username) {
+    async addCart(username, address) {
         try {
             const content = await this.getAll();
             //Defino el valor del id en base al contenido del archivo
@@ -46,7 +46,7 @@ export class firebaseCartContainer {
             if (content.length > 0) {
                 lastId = content[content.length - 1].id + 1;
             }
-            let cart = new Cart(username);
+            let cart = new Cart(username, address);
             let newCart = { ...cart, id: lastId };
             //agrego el producto a la db, y devuelvo el resultado
             let doc = this.query.doc(`${lastId}`);

@@ -18,10 +18,18 @@ const serviceAccount = {
   "client_x509_cert_url": process.env.FB_CLIENT_X509_CERT_URL
 };
 
+let dataPersistense;
 let dbfirebase = "";
 let dbmongo = "";
 
-if (process.env.DATA_PERSISTENCE == "FIREBASE") {
+
+if(process.env.NODE_ENV=='development'){
+  dataPersistense= process.env.DEV_PERSISTENCE||'FILE'
+}else if(process.env.NODE_ENV=='production'){
+  dataPersistense= process.env.PROD_PERSISTENCE||'MONGO'
+}
+
+if (dataPersistense == "FIREBASE") {
   try {
     //prueba de conexion firebase
     admin.initializeApp({
@@ -32,7 +40,7 @@ if (process.env.DATA_PERSISTENCE == "FIREBASE") {
   } catch (error) {
     logger.log("error", `${err}`);
   }
-} else if (process.env.DATA_PERSISTENCE == "MONGO") {
+} else if (dataPersistense == "MONGO") {
   //prueba de conexion mongo
   dbmongo = mongoose.connection;
   dbmongo.on('error', console.error.bind(console, 'connection error:'));

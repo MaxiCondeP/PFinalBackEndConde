@@ -7,9 +7,14 @@ import { logger } from "../../logger_config.js"
 //Traigo órdenes por user
 export const getUsrOrders = async (req, res) => {
     let user = req.params.email;
-    let orders = await daoOrders.getByUsr(user)
+    let orders;
+    if(user){
+        orders = await daoOrders.getByUsr(user)
+    }else{
+        orders= await daoOrders.getByUsr(req.session.usr.username)
+    }
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    if (orders) {
+    if (orders && orders.length>0) {
         res.status(200).send(orders);
     } else {
         res.status(200).send('No se encontraron órdenes');

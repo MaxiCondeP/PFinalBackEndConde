@@ -22,13 +22,13 @@ export class memoryCartContainer {
 
 
     ////Agrego producto al array
-    async addCart(username) {
+    async addCart(username, address) {
         //Defino el valor del id en base al contenido del array
         let lastId = 1;
         if (this.carts.length > 0) {
             lastId = this.carts[this.carts.length - 1].id + 1;
         }
-        let cart = new Cart(username);
+        let cart = new Cart(username, address);
         let newCart = { ...cart, id: lastId };
         //agrego el producto al array 
         this.carts.push(newCart);

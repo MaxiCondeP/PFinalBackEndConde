@@ -6,7 +6,7 @@ import { logger } from "../../logger_config.js"
 
 //Crea un carrito y dev su id
 export const newCart = async (req, res) => {
-    let id = await daoCarts.addCart(req.session.usr.username);
+    let id = await daoCarts.addCart(req.session.usr.username, req.session.usr.address);
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
     if (id) {
         res.status(200).send(`Carrito id ${id} creado`);

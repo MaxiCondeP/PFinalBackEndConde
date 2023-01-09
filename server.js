@@ -68,9 +68,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 await localPassport(passport);
 
-app.use('/products', routerProd);
-app.use('/cart', routerCart);
-app.use('/orders', routerOrder);
+app.use('/productos', routerProd);
+app.use('/carrito', routerCart);
+app.use('/orden', routerOrder);
 app.use('/chat', routerMessage);
 app.use('/', routerIndex);
 app.use('/', routerInfo);
