@@ -84,7 +84,7 @@ export class memoryOrderContainer {
         let order = this.getByID(id);
         const index = this.orders.findIndex(c => c.id == id);
         if (order) {
-            if (order.state != "confirmada " && order.state != "cancelada") {
+            if (order.state != "confirmada" && order.state != "cancelada") {
                 order.state = state;
                 this.orders[index] = order;
                 return true;

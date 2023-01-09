@@ -85,6 +85,7 @@ export class mongoProductContainer {
                 let updated = new Product(newProd.title, newProd.price, newProd.thumbnail, newProd.stock, id);
                 await this.collection.findOneAndUpdate({ _id: prod._id }, updated);
             }
+            return prod;
         } catch (err) {
             logger.log("error", `No se pudo modificar el el producto ${err}`);
         }
@@ -100,6 +101,9 @@ export class mongoProductContainer {
             const index = content.findIndex(prod => prod.id == id);
             if (index != -1) {
                 await this.collection.deleteOne({ id: id })
+                return content[index];
+            }else{
+                return null;
             }
         } catch {
             logger.log("error", `No se pudo eliminar el producto ${err}`);

@@ -93,6 +93,7 @@ export class ProdContainer {
                 products.splice(index, 1, updated);
                 await this.write(products);
             }
+            return prod;
         } catch (err) {
             logger.log("error", `No se pudo modificar el el producto ${err}`);
         }
@@ -109,7 +110,7 @@ export class ProdContainer {
             if (index != -1) {
                 let prod = content.splice(index, 1);
                 await this.write(content);
-                return prod
+                return prod;
             } else {
                 return null;
             }

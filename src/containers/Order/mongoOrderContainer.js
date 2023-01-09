@@ -95,9 +95,10 @@ export class mongoOrderContainer {
     //Cambio el estado de una orden
     async changeState(id, state) {
         try {
-            let order = await this.getByID(id);;
+            let order = await this.getByID(id);
             if (order) {
-                if (order.state != "confirmada " && order.state != "cancelada") {
+                console.log(order.state);
+                if (order.state != "confirmada" && order.state != "cancelada") {
                     await this.collection.updateOne(
                         { id: id },
                         {

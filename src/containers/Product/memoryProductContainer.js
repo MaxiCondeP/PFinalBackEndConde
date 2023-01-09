@@ -56,7 +56,7 @@ export class ProdContainer {
         //traigo el array y lo filtro por ID
         let content = this.getAll();
         const prod = content.filter(prod => prod.category == category);
-        if (prod.length>0) {
+        if (prod.length > 0) {
             return prod;
         } else {
             return null;
@@ -71,7 +71,7 @@ export class ProdContainer {
             let index = products.findIndex(p => p.id == id)
             this.products.splice(index, 1, updated);
         }
-
+        return prod;
     }
 
 
@@ -81,8 +81,11 @@ export class ProdContainer {
         //Busco el index del id, y si existe lo elimino del array
         const index = content.findIndex(prod => prod.id == id);
         if (index != -1) {
-            content.splice(index, 1);
+            let prod = content.splice(index, 1);
             this.products = content;
+            return prod;
+        } else {
+            return null;
         }
     }
 

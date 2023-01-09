@@ -39,13 +39,19 @@ export const deleteCart = async (req, res) => {
 //Devuelve productos de un carrito
 export const getProductsOnCart = async (req, res) => {
     let id = req.params.id;
+    let cart= await daoCarts.getByID(id);
     let products = await daoCarts.getProducts(id);
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    if (products.length > 0) {
-        res.status(200).send(products);
-    } else {
-        res.status(200).send('No hay productos en el carrito');
+    if(cart){
+        if (products.length > 0) {
+            res.status(200).send(products);
+        } else {
+            res.status(200).send('No hay productos en el carrito');
+        }
+    }else{
+        res.status(200).send('No se encontró el carrito')
     }
+   
 
 }
 
@@ -89,7 +95,7 @@ export const generateOrder = async (req, res) => {
             //elimino el carrito
             await daoCarts.delete(idCart);
             await getOrderMail(user.name, products);
-            await getOrderSMS(user.name, user.phone);
+            await getOrderSMS(user.phone,user.name);
             if (order.id != undefined) {
                 res.status(200).send(`La orden #${order.id} se ha creado correctamente en estado:- ${order.state}`);
             } else {

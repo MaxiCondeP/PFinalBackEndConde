@@ -87,6 +87,7 @@ export class firebaseProductContainer {
                 const doc = this.query.doc(`${id}`);
                 await doc.update(updated);
             }
+            return prod;
         } catch (err) {
             logger.log("error", `No se pudo modificar el el producto ${err}`);
         }
@@ -102,6 +103,9 @@ export class firebaseProductContainer {
             const index = content.findIndex(prod => prod.id == id);
             if (index != -1) {
                 await this.query.doc(`${id}`).delete();
+                return content[index];
+            }else{
+                return null;
             }
         } catch {
             logger.log("error", `No se pudo eliminar el producto ${err}`);

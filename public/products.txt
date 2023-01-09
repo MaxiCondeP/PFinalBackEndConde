@@ -13,9 +13,9 @@
 		"price": 1000,
 		"thumbnail": "loremipsum.com",
 		"timestamp": 1660824480684,
-		"stock": 0,
+		"stock": 10,
 		"category": "informática",
-		"id": 2
+		"id": "2"
 	},
 	{
 		"title": "Monitor",
@@ -25,5 +25,14 @@
 		"stock": 8,
 		"category": "informática",
 		"id": 3
+	},
+	{
+		"title": "Equipo de audio",
+		"price": 102300,
+		"thumbnail": "loremipsum.com",
+		"timestamp": 1660824480684,
+		"stock": 10,
+		"category": "audio",
+		"id": "4"
 	}
 ]

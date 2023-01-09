@@ -111,7 +111,7 @@ export class OrderContainer {
         let content = await this.getAll();
         const index = content.findIndex(c => c.id == id);
         if (order) {
-            if (order.state != "confirmada " && order.state != "cancelada") {
+            if (order.state != "confirmada" && order.state != "cancelada") {
                 order.state = state;
                 content[index] = order;
                 await this.write(content);

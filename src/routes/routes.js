@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import passport from "passport";
-import { isAdmin } from '../utils/middlewares.js';
 import { authJWT } from "../utils/auth.js";
 import { getInfo, redirectToInfo } from '../controllers/extraApisController.js'
 import {
@@ -32,3 +31,7 @@ routerInfo.get('/info', redirectToInfo);
 //Endpoint que voy a llamar desde el front a través de fetch
 routerInfo.get('/info/api', getInfo);
 routerInfo.get("*", badRoute);
+routerInfo.put("*", badRoute);
+routerInfo.post("*", badRoute);
+routerInfo.delete("*", badRoute);
+

@@ -4,7 +4,7 @@
 		"username": "admin@123456.com",
 		"password": "$2b$10$Qz8YOm4ts/.UyywpI6MVdOadmDxpVxV0Rv8bXbdVHORNn4gVRNc5a",
 		"age": 32,
-		"phone": 2236835362,
+		"phone": 5491112345678,
 		"avatar": "loremipsum.com/lorem",
 		"address": "Colon 3232, CABA",
 		"isAdmin": true
@@ -12,9 +12,9 @@
 	{
 		"name": "user 123456",
 		"username": "user@123456.com",
-		"password": "$2b$10$1XvcAGfkT/Z60Yk0ke9gyO0zi785qBLHJA/sFKtxZqNmxg/hZ0Y6W",
+		"password": "$2b$10$v.KA.n6AI0xGRjqo8Hph/etx2Uq2LXdgTytoFY3I2rhwis4KrzStu",
 		"age": 32,
-		"phone": 2236835362,
+		"phone": 5491112345678,
 		"avatar": "loremipsum.com/lorem",
 		"address": "Colon 3232, CABA",
 		"isAdmin": true

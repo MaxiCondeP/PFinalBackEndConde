@@ -50,15 +50,24 @@ export const newProduct = async (req, res) => {
 //Modifica un producto con su id
 export const updateProduct = async (req, res) => {
     let id = req.params.id;
-    await daoProducts.editByID(id, req.body);
+    let prod= await daoProducts.editByID(id, req.body);
+    if(prod){
+        res.status(200).send(`Producto id:${id} editado.`);
+    }else{
+        res.status(200).send(`No se pudo editar el producto`);
+    }
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send(`Producto editado.`);
+   
 }
 
 //Elimina un producto por id
 export const deleteProduct=  async (req, res) => {
     let id = req.params.id;
-    await daoProducts.deleteById(id);
+    let prod= await daoProducts.deleteById(id);
+    if(prod){
+        res.status(200).send(`Producto id:${id} eliminado.`);
+    }else{
+        res.status(200).send(`No se pudo eliminar el producto`);
+    }
     logger.log("info", `Ruta: ${req.url}, Metodo: ${req.method}`);
-    res.status(200).send(`Producto eliminado.`);
 }

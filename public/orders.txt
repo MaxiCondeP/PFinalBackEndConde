@@ -54,5 +54,34 @@
 		],
 		"state": "cancelada",
 		"id": 2
+	},
+	{
+		"timestamp": "1673275879146",
+		"usr": "user@123456.com",
+		"products": [
+			{
+				"title": "Equipo de audio",
+				"price": 102300,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 9,
+				"category": "audio",
+				"id": "4",
+				"quantity": 1
+			},
+			{
+				"title": "Teclado",
+				"price": 2500,
+				"thumbnail": "loremipsum.com",
+				"timestamp": 1660824480684,
+				"stock": 12,
+				"category": "informática",
+				"id": 1,
+				"quantity": 4
+			}
+		],
+		"state": "cancelada",
+		"address": "Colon 3232, CABA",
+		"id": 3
 	}
 ]
